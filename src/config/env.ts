@@ -5,7 +5,7 @@ type Config = {
 };
 
 export const config: Config = {
-  supabaseURL: process.env.SUPABASE_URL || "",
-  supabasePublicAnonKey: process.env.SUPABASE_PUBLIC_ANON_KEY || "",
+  supabaseURL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+  supabasePublicAnonKey: process.env.NEXT_PUBLIC_SUPABASE_KEY || "",
   supabaseFunctionsBaseURL: process.env.SUPABASE_FUNCTIONS_BASE_URL || "",
 };

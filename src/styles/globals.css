@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-primary dark:bg-primary-dark;
+  }
+}
+
+@layer components {
+  .x-form-label {
+    @apply block text-sm font-medium;
+  }
+
+  .x-form-input {
+    @apply bg-input dark:bg-input-dark block w-full appearance-none rounded-md px-3 py-2 shadow-sm sm:text-sm border border-input-border dark:border-input-border-dark focus:ring-0 focus:border-accent dark:focus:border-accent-dark;
+  }
+
+  .x-form-checkbox {
+    @apply bg-input dark:bg-input-dark rounded border border-input-border dark:border-input-border-dark text-accent dark:text-accent-dark focus:ring-0 focus:border-accent dark:focus:border-accent-dark;
+  }
+
+  .x-button {
+    @apply flex w-full justify-center rounded-md border border-transparent bg-accent dark:bg-accent-dark py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-accent-hover dark:hover:bg-accent-hover-dark;
+  }
+
+  .x-link {
+    @apply font-medium text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark;
+  }
+}

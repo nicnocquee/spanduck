@@ -28,7 +28,6 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-*/.env
 */**/.env
 
 # vercel
@@ -38,5 +37,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# temporary folders
-/tmp
+/tmp/

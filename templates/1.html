@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 1080px;
+        height: 1080px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#0a0908] w-[1080px] h-[1080px] relative p-[65px]">
+      <div
+        class="border-[5px] w-[950px] h-[950px] absolute left-[65px] top-[65px] overflow-hidden"
+        style="border: solid #ffffff"
+      >
+        {{#if images.length}}
+        <img
+          class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center"
+          src="{{ images.[0] }}"
+        />
+        {{/if}}
+
+        <div class="w-[205px] h-[17px] absolute left-[723px] top-[914px]">
+          <div
+            class="text-left absolute left-0 top-0"
+            style="font: 400 14px 'Inter', sans-serif"
+          >
+            <span
+              ><span class="text-[#ffffff] created-with----by--spanduck2-span"
+                >Created with</span
+              ><span class="created-with----by--spanduck2-span2"> ❤️ </span
+              ><span class="text-[#ffffff] created-with----by--spanduck2-span3"
+                >by @spanduck</span
+              ></span
+            >
+          </div>
+        </div>
+        <img
+          class="absolute left-[100px] top-[720px] object-cover object-center w-[144px] h-auto rounded-full"
+          src="{{ avatar }}"
+        />
+        <svg
+          class="absolute left-[100px] top-[688px] overflow-visible"
+          style="transform: translate(0px, 0px)"
+          width="750"
+          height="1"
+          viewBox="0 0 750 1"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M750 1L0 1L0 0L750 0V1Z"
+            fill="white"
+          />
+        </svg>
+
+        <div class="w-[644px] h-[126px] static">
+          <div
+            class="text-[#ffffff] text-left absolute left-[267px] top-[749px]"
+            style="font: 400 36px 'Inter', sans-serif"
+          >
+            {{ display_name }}
+          </div>
+
+          <div
+            class="text-[#ffffff] text-left absolute left-[267px] top-[804px]"
+            style="font: 400 24px 'Inter', sans-serif"
+          >
+            @{{ username }}
+          </div>
+
+          <img
+            class="rounded-[50%] w-[127px] h-[126px] absolute left-28 top-[728px]"
+            src="ellipse-1.png"
+          />
+        </div>
+
+        <div
+          class="text-[#ffffff] text-left absolute left-[93px] top-[137px] w-[693px] h-[521px] max-w-[693px] max-h-[521px] truncate"
+          style="font: 700 32px 'Inter', sans-serif"
+        >
+          <p class="whitespace-pre-wrap">{{ content }}</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

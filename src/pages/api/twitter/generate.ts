@@ -4,21 +4,21 @@ import * as fsPromises from "fs/promises";
 import fs from "node:fs";
 import path from "node:path";
 import z from "zod";
-import handleResponse from "@/utils/handle-response";
-import { ImageTemplateEngine } from "@/utils/image-template-engine";
+import handleResponse from "@/api/utils/handle-response";
+import { ImageTemplateEngine } from "@/api/utils/image-template-engine";
 import {
   createTwitterStorage,
   getTwitterObjectURL,
   getTwitterStorage,
   getTwitterStorageByObjectName,
   uploadToTwitterStorage,
-} from "@/usecases/storage/twitter";
-import { SupabaseFunctionsClient } from "@/config/axios";
+} from "@/api/usecases/storage/twitter";
 import {
   createTwitterData,
   getTwitterDataByTweetID,
-} from "@/usecases/database/twitter";
-import { ITwitterData } from "@/interfaces/twitter";
+} from "@/api/usecases/database/twitter";
+import { ITwitterData } from "@/api/interfaces/twitter";
+import { supabase } from "@/utils/supabase";
 
 export default async function handler(
   req: NextApiRequest,
@@ -85,19 +85,20 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
     } else {
       console.debug("Twitter Metadata not found. Generating...");
       // Get the tweet metadata
-      const response = await SupabaseFunctionsClient.post("/twitter", {
-        twitter_url: validated.url,
-      });
-      if (response.status !== 200) {
-        return handleResponse(res, {
-          status: response.status,
-          body: response.data,
+      const { data: functionData, error: functionError } =
+        await supabase.functions.invoke("twitter", {
+          body: {
+            twitter_url: validated.url,
+          },
         });
+
+      if (functionError) {
+        throw new Error(functionError.message);
       }
 
       // Create a new entry in the database
       const { error: createError } = await createTwitterData({
-        ...response.data,
+        ...functionData,
         tweet_id: tweetID,
       });
 
@@ -105,7 +106,7 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
         throw new Error(createError.message);
       }
 
-      metadata = response.data;
+      metadata = functionData;
     }
 
     // Check if image is already generated

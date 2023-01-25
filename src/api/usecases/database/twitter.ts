@@ -1,4 +1,4 @@
-import { ITwitterData, ITwitterDataBody } from "@/interfaces/twitter";
+import { ITwitterData, ITwitterDataBody } from "@/api/interfaces/twitter";
 import { supabase } from "@/utils/supabase";
 
 export async function getTwitterData() {

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
-import { ITwitterData } from "@/interfaces/twitter";
+import { ITwitterData } from "@/api/interfaces/twitter";
 
 export class ImageTemplateEngine {
   private data: ITwitterData;

@@ -20,6 +20,12 @@ export async function createTwitterStorage() {
   return supabase.storage.createBucket("twitter");
 }
 
+export async function getTwitterStorageByObjectName(path: string) {
+  return supabase.storage.from("twitter").createSignedUrl(path, 1, {
+    download: false,
+  });
+}
+
 export async function uploadToTwitterStorage(
   targetPath: string,
   file: TFile,

@@ -3,24 +3,16 @@ import fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
-
-interface TwitterData {
-  tweet_url: string;
-  username: string;
-  avatar: string;
-  display_name: string;
-  content: string;
-  images: string[];
-}
+import { ITwitterData } from "@/interfaces/twitter";
 
 export class ImageTemplateEngine {
-  private data: TwitterData;
+  private data: ITwitterData;
 
-  constructor(data: TwitterData) {
+  constructor(data: ITwitterData) {
     this.data = data;
   }
 
-  async generate(templateID: number) {
+  async generate(templateID: number, fileName: string) {
     // Get the contents of the HTML template
     const file = await fsPromises.readFile(
       path.resolve(`templates/${templateID}.html`),
@@ -39,9 +31,6 @@ export class ImageTemplateEngine {
     }
 
     // Generate the image based on the HTML
-    const fileName = `${this.data.tweet_url
-      .split("/")
-      .pop()}_${templateID}.png`;
     const outputPath = `tmp/${fileName}`;
     const output = path.resolve(outputPath);
     await nodeHtmlToImage({
@@ -49,9 +38,6 @@ export class ImageTemplateEngine {
       html,
     });
 
-    return {
-      fileName,
-      outputPath,
-    };
+    return outputPath;
   }
 }

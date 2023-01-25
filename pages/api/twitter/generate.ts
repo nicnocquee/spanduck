@@ -10,9 +10,15 @@ import {
   createTwitterStorage,
   getTwitterObjectURL,
   getTwitterStorage,
+  getTwitterStorageByObjectName,
   uploadToTwitterStorage,
 } from "@/usecases/storage/twitter";
 import { SupabaseFunctionsClient } from "@/config/axios";
+import {
+  createTwitterData,
+  getTwitterDataByTweetID,
+} from "@/usecases/database/twitter";
+import { ITwitterData } from "@/interfaces/twitter";
 
 export default async function handler(
   req: NextApiRequest,
@@ -50,51 +56,103 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
     });
     const validated = await schema.parseAsync(body);
 
-    // Get the tweet metadata
-    const response = await SupabaseFunctionsClient.post("/twitter", {
-      twitter_url: validated.url,
-    });
-    if (response.status !== 200) {
-      return handleResponse(res, {
-        status: response.status,
-        body: response.data,
-      });
-    }
-    const metadata = response.data;
-
-    // Check if the template exists
-    const { templateID } = validated;
-    if (!fs.existsSync(path.resolve(`templates/${templateID}.html`))) {
+    // Validate the URL
+    const urlObject = new URL(validated.url);
+    const { host, pathname } = urlObject;
+    if (host !== "twitter.com") {
       return handleResponse(res, {
         status: StatusCodes.UNPROCESSABLE_ENTITY,
         body: {
-          message: "Template not found!",
+          message: "Not a valid Twitter URL",
           data: null,
         },
       });
     }
 
-    // Generate image
-    const ITE = new ImageTemplateEngine(metadata);
-    const { outputPath, fileName } = await ITE.generate(templateID);
+    // Check if tweet metadata already exists
+    let metadata: ITwitterData;
+    const tweetID = pathname.split("/").pop() as string;
+    const { data: found, error: findError } = await getTwitterDataByTweetID(
+      tweetID
+    );
 
-    // Check if bucket existed
-    const isBucketExists = await getTwitterStorage();
-    if (!isBucketExists) {
-      await createTwitterStorage();
+    // If exists, return from Database
+    // Else, fetch from Twitter API
+    if (found && found.length === 1 && !findError) {
+      console.debug("Twitter Metadata found. Using previous data...");
+      const [foundMetadata] = found;
+      metadata = foundMetadata;
+    } else {
+      console.debug("Twitter Metadata not found. Generating...");
+      // Get the tweet metadata
+      const response = await SupabaseFunctionsClient.post("/twitter", {
+        twitter_url: validated.url,
+      });
+      if (response.status !== 200) {
+        return handleResponse(res, {
+          status: response.status,
+          body: response.data,
+        });
+      }
+
+      // Create a new entry in the database
+      const { error: createError } = await createTwitterData({
+        ...response.data,
+        tweet_id: tweetID,
+      });
+
+      if (createError) {
+        throw new Error(createError.message);
+      }
+
+      metadata = response.data;
     }
 
-    // Read file as buffer and upload the file to bucket
-    const file = await fsPromises.readFile(outputPath);
-    const { data, error } = await uploadToTwitterStorage(fileName, file, {
-      upsert: true,
-    });
-    if (error) {
-      throw new Error(error.message);
-    }
+    // Check if image is already generated
+    let url: string;
+    const { templateID } = validated;
+    const fileName = `${tweetID}_${templateID}.png`;
+    const { data: imageData, error: imageError } =
+      await getTwitterStorageByObjectName(fileName);
 
-    // Get download URL for image
-    const url = await getTwitterObjectURL(data.path);
+    if (imageData && !imageError) {
+      console.debug("Generated image found. Using previous data...");
+      url = await getTwitterObjectURL(fileName);
+    } else {
+      console.debug("Generated image not found. Generating...");
+      // Check if the template exists
+      if (!fs.existsSync(path.resolve(`templates/${templateID}.html`))) {
+        return handleResponse(res, {
+          status: StatusCodes.UNPROCESSABLE_ENTITY,
+          body: {
+            message: "Template not found!",
+            data: null,
+          },
+        });
+      }
+
+      // Generate image
+      const ITE = new ImageTemplateEngine(metadata);
+      const outputPath = await ITE.generate(templateID, fileName);
+
+      // Check if bucket existed
+      const isBucketExists = await getTwitterStorage();
+      if (!isBucketExists) {
+        await createTwitterStorage();
+      }
+
+      // Read file as buffer and upload the file to bucket
+      const file = await fsPromises.readFile(outputPath);
+      const { error } = await uploadToTwitterStorage(fileName, file, {
+        upsert: true,
+      });
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Get download URL for image
+      url = await getTwitterObjectURL(fileName);
+    }
 
     return handleResponse(res, {
       status: StatusCodes.OK,

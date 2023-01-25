@@ -81,7 +81,9 @@ async function getData(tweetURL: string): Promise<Response> {
       result = {
         tweet_url: tweetURL,
         username: data.includes.users[0].username,
-        avatar: data.includes.users[0].profile_image_url,
+        avatar: data.includes.users[0].profile_image_url
+          .split("_normal")
+          .join(""),
         display_name: data.includes.users[0].name,
         content: data.data.text,
         images: data.includes.media?.map((media) => media.url),

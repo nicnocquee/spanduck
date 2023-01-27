@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     event = stripe.webhooks.constructEvent(
       reqBuffer,
       signature,
-      envConfig.stripeSigningSecret
+      envConfig.stripeSubscriptionWebhookSigningSecret
     );
   } catch (error: any) {
     console.log(error);

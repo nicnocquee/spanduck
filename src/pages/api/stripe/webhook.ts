@@ -2,27 +2,29 @@ import Stripe from "stripe";
 import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import { config as envConfig } from "../../../../src/api/config/env";
 
 export const config = { api: { bodyParser: false } };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+  const stripe = new Stripe(envConfig.stripeSecretKey, {
     apiVersion: "2022-11-15",
   });
   const signature = req.headers["stripe-signature"] as string;
-  const signingSecret = process.env.STRIPE_SIGNING_SECRET || "";
   const reqBuffer = await buffer(req);
 
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(reqBuffer, signature, signingSecret);
+    event = stripe.webhooks.constructEvent(
+      reqBuffer,
+      signature,
+      envConfig.stripeSigningSecret
+    );
   } catch (error: any) {
     console.log(error);
     return res.status(400).send(`Webhook error: ${error.message}`);
   }
-
-  console.dir(event, { depth: null });
 
   const schema = z.object({
     id: z.string(),
@@ -30,25 +32,46 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     livemode: z.boolean(),
     type: z.string(), // "checkout.session.completed"
     data: z.object({
-      id: z.string(),
-      object: z.string(),
-      amount_total: z.number(),
-      amount_subtotal: z.number(),
-      created: z.number(),
-      customer: z.string(),
-      customer_details: z.object({
-        email: z.string(),
-        name: z.string(),
+      object: z.object({
+        id: z.string(),
+        object: z.string(),
+        amount_total: z.number(),
+        amount_subtotal: z.number(),
+        created: z.number(),
+        customer: z.string(),
+        customer_details: z.object({
+          email: z.string(),
+          name: z.string().nullable(),
+        }),
+        livemode: z.boolean(),
+        payment_intent: z.string(),
+        payment_link: z.string().nullable(),
+        payment_status: z.string(), //'paid',
+        status: z.string(), // complete
       }),
-      livemode: z.boolean(),
-      payment_intent: z.string(),
-      payment_link: z.string(),
-      payment_status: z.string(), //'paid',
-      status: z.string(), // complete
     }),
   });
 
-  const parsedEvent = schema.parse(event);
+  try {
+    const parsedEvent = schema.parse(event);
+    console.dir(parsedEvent, { depth: null });
+
+    if (
+      parsedEvent.type === "checkout.session.completed" &&
+      parsedEvent.data.object.status === "complete" &&
+      parsedEvent.data.object.payment_status === "paid"
+    ) {
+      const item = await stripe.checkout.sessions.listLineItems(
+        parsedEvent.data.object.id
+      );
+      console.dir(item, { depth: null });
+    }
+  } catch (error) {
+    if (event.type === "checkout.session.completed") {
+      console.dir(error, { depth: null });
+      return res.status(403).send("ng");
+    }
+  }
 
   /*
 {
@@ -160,8 +183,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   "type": "checkout.session.completed"
 }
   */
-
-  console.dir(parsedEvent, { depth: null });
 
   res.send({ received: true });
 };

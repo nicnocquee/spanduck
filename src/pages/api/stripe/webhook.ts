@@ -61,10 +61,63 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       parsedEvent.data.object.status === "complete" &&
       parsedEvent.data.object.payment_status === "paid"
     ) {
-      const item = await stripe.checkout.sessions.listLineItems(
-        parsedEvent.data.object.id
+      const session = await stripe.checkout.sessions.retrieve(
+        parsedEvent.data.object.id,
+        {
+          expand: ["line_items"],
+        }
       );
-      console.dir(item, { depth: null });
+
+      const item = session?.line_items?.data?.[0];
+      const productId = item?.price?.product as string;
+      const product = await stripe.products.retrieve(productId);
+
+      console.dir({ product }, { depth: null });
+
+      /*
+        {
+  object: "list",
+  data:
+    [
+      {
+        id: "li_1MUtXxKw1WOEy4mkZ38cyWg8",
+        object: "item",
+        amount_discount: 0,
+        amount_subtotal: 2000,
+        amount_tax: 0,
+        amount_total: 2000,
+        currency: "usd",
+        description: "Spanduck Pro Single",
+        price:
+          {
+            id: "price_1MUpKDKw1WOEy4mkNKFIPPZM",
+            object: "price",
+            active: true,
+            billing_scheme: "per_unit",
+            created: 1674815909,
+            currency: "usd",
+            custom_unit_amount: null,
+            livemode: false,
+            lookup_key: null,
+            metadata: {},
+            nickname: null,
+            product: "prod_NFJynlA3vv3a8V",
+            recurring: null,
+            tax_behavior: "unspecified",
+            tiers_mode: null,
+            transform_quantity: null,
+            type: "one_time",
+            unit_amount: 2000,
+            unit_amount_decimal: "2000",
+          },
+        quantity: 1,
+      },
+    ],
+  has_more: false,
+  url: "/v1/checkout/sessions/cs_test_a12HjJqCpeVjvJ1vOrhwHkIQRqFyguQUlQ7BuvwWdCFqjBessEqJwmFUTd/line_items",
+}
+
+      */
     }
   } catch (error) {
     if (event.type === "checkout.session.completed") {

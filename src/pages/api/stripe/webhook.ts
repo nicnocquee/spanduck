@@ -22,6 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).send(`Webhook error: ${error.message}`);
   }
 
+  console.dir(event, { depth: null });
+
   const schema = z.object({
     id: z.string(),
     object: z.string(),

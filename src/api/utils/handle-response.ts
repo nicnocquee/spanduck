@@ -13,3 +13,7 @@ export default function handleResponse(
   const { status, body } = data;
   return res.status(status).json(body);
 }
+
+export function handleFileResponse(res: NextApiResponse, data: any) {
+  return res.send(data);
+}

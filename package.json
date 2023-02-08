@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.13",
+    "@headlessui/react": "^1.7.10",
+    "@heroicons/react": "^2.0.14",
     "@next/font": "13.1.4",
     "@supabase/supabase-js": "^2.4.1",
     "@types/node": "18.11.18",

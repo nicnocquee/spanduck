@@ -51,7 +51,7 @@ export default function DashboardLayout({
                           href={item.href}
                           className={classNames(
                             item.href === router.pathname
-                              ? "border-indigo-500 text-gray-900"
+                              ? "border-accent text-gray-900"
                               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
                             "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                           )}>
@@ -63,13 +63,13 @@ export default function DashboardLayout({
                   <div className="hidden sm:ml-6 sm:flex sm:items-center">
                     <button
                       type="button"
-                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                     <Menu as="div" className="relative ml-3">
                       <div>
-                        <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
                           <span className="sr-only">Open user menu</span>
                           <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center">
                             <span className="text-white font-semibold">
@@ -106,7 +106,7 @@ export default function DashboardLayout({
                     </Menu>
                   </div>
                   <div className="-mr-2 flex items-center sm:hidden">
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -157,7 +157,7 @@ export default function DashboardLayout({
                     </div>
                     <button
                       type="button"
-                      className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
@@ -178,20 +178,11 @@ export default function DashboardLayout({
             </>
           )}
         </Disclosure>
-        <div className="py-10">
-          <header>
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
-                {title}
-              </h1>
-            </div>
-          </header>
-          <main>
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-              <div className="p-4 sm:px-0">{children}</div>
-            </div>
-          </main>
-        </div>
+        <main>
+          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-10">
+            {children}
+          </div>
+        </main>
       </div>
     </>
   );

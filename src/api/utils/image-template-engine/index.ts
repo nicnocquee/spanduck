@@ -4,12 +4,35 @@ import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
 import { ITwitterData } from "@/api/interfaces/twitter";
+import { IImageData } from "@/api/interfaces/image";
+
+Handlebars.registerHelper("isEqual", function (value1, value2) {
+  return value1 === value2;
+});
 
 export class ImageTemplateEngine {
-  private data: ITwitterData;
+  private data: ITwitterData | IImageData;
 
-  constructor(data: ITwitterData) {
+  private isTwitterData(data: any): data is ITwitterData {
+    return data.tweet_url !== undefined;
+  }
+
+  private isImageData(data: any): data is IImageData {
+    return data.url !== undefined;
+  }
+
+  private source = "";
+
+  constructor(data: ITwitterData | IImageData) {
     this.data = data;
+
+    if (this.isTwitterData(data)) {
+      this.source = "twitter";
+    }
+
+    if (this.isImageData(data)) {
+      this.source = "url";
+    }
   }
 
   async generate(templateID: number, fileName: string) {
@@ -23,7 +46,7 @@ export class ImageTemplateEngine {
 
     // Compile the HTML with the data provided
     const template = Handlebars.compile(file);
-    const html = template({ ...this.data });
+    const html = template({ ...this.data, source: this.source });
 
     // Prepare the directory
     if (!fs.existsSync(path.resolve("tmp"))) {

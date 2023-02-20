@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 1200px;
+        height: 630px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#0a0908] w-[1200px] h-[630px] relative overflow-hidden">
+      <div
+        class="border-[5px] w-[1150px] h-[600px] absolute left-[25px] top-[15px] overflow-hidden"
+        style="border: solid #ffffff">
+        <img
+          class="w-[1216px] h-[1521px] absolute left-[-66px] top-[-226px]"
+          src="{{images.[0]}}g" />
+
+        <div class="w-[205px] h-[17px] absolute left-[913px] top-[553px]">
+          <div
+            class="text-left absolute left-0 top-0"
+            style="font: 400 14px 'Inter', sans-serif">
+            <span
+              ><span class="text-[#ffffff] created-with----by--spanduck2-span"
+                >Created with</span
+              ><span class="created-with----by--spanduck2-span2"> ❤️ </span
+              ><span class="text-[#ffffff] created-with----by--spanduck2-span3"
+                >by @spanduck</span
+              ></span
+            >
+          </div>
+        </div>
+        <svg
+          class="absolute left-[93px] top-[420px] overflow-visible"
+          style="transform: translate(0px, 0px)"
+          width="964"
+          height="3"
+          viewBox="0 0 964 3"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M964 3L0 3L0 0L964 0V3Z"
+            fill="white" />
+        </svg>
+
+        <div class="w-[547px] h-[100px] static">
+          <div
+            class="text-[#ffffff] text-left absolute left-48 top-[464px]"
+            style="font: 400 32px 'Inter', sans-serif">
+            {{display_name}}
+          </div>
+
+          <div
+            class="text-[#ffffff] text-left absolute left-48 top-[512px]"
+            style="font: 400 24px 'Inter', sans-serif">
+            {{username}}
+          </div>
+
+          <img
+            class="rounded-[50%] w-[100px] h-[100px] absolute left-20 top-[453px]"
+            src="{{avatar}}" />
+        </div>
+
+        <div
+          class="text-[#ffffff] text-left absolute left-48 top-[129px] w-[695px] h-[207px]"
+          style="font: 700 48px 'Inter', sans-serif">
+          <span>{{content}}</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -13,16 +13,40 @@ function RegisterPage() {
   const [authSuccess, setAuthSuccess] = useState<string | null>(null);
   const [authError, setAuthError] = useState<AuthError | null>(null);
 
+  const handleSubmit = async (
+    values: {
+      name: string;
+      email: string;
+      password: string;
+    },
+    { resetForm }: { resetForm: () => void }
+  ) => {
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: { name: values.name },
+      },
+    });
+
+    if (error) {
+      setAuthError(error);
+    } else {
+      setAuthSuccess(SIGN_UP_SUCCESS);
+      resetForm();
+    }
+  };
+
   return (
     <PageMeta title="Create a new account">
-      <div className="flex min-h-full md:min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">
+          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Create a new account
           </h2>
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-card dark:bg-card-dark py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             {authSuccess && (
               <div className="mb-6">
                 <SuccessAlert message={authSuccess} />
@@ -35,62 +59,73 @@ function RegisterPage() {
             )}
             <Formik
               initialValues={{ name: "", email: "", password: "" }}
-              onSubmit={async (values, { resetForm }) => {
-                const { name, email, password } = values;
-
-                const { error } = await supabase.auth.signUp({
-                  email,
-                  password,
-                  options: { data: { name } },
-                });
-
-                if (error) {
-                  setAuthError(error);
-                } else {
-                  setAuthSuccess(SIGN_UP_SUCCESS);
-                  resetForm();
-                }
-              }}>
+              onSubmit={handleSubmit}>
               <Form className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="x-form-label">
+                  <label htmlFor="name" className="x-label">
                     Your name
                   </label>
                   <div className="mt-1">
                     <Field
                       required
+                      id="name"
                       name="name"
-                      type="text"
+                      type="name"
                       autoComplete="name"
-                      className="x-form-input"
+                      className="x-input"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="email" className="x-form-label">
+                  <label htmlFor="email" className="x-label">
                     Email address
                   </label>
                   <div className="mt-1">
                     <Field
                       required
+                      id="email"
                       name="email"
                       type="email"
                       autoComplete="email"
-                      className="x-form-input"
+                      className="x-input"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="password" className="x-form-label">
+                  <label htmlFor="password" className="x-label">
                     Password
                   </label>
                   <div className="mt-1">
                     <Field
                       required
+                      id="password"
                       name="password"
                       type="password"
-                      className="x-form-input"
+                      autoComplete="current-password"
+                      className="x-input"
                     />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      id="remember-me"
+                      name="remember-me"
+                      type="checkbox"
+                      className="x-checkbox"
+                    />
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-gray-900">
+                      Remember me
+                    </label>
+                  </div>
+                  <div className="text-sm">
+                    <Link
+                      href="/forgot"
+                      className="font-medium text-indigo-600 hover:text-indigo-500">
+                      Forgot your password?
+                    </Link>
                   </div>
                 </div>
                 <div>

@@ -2,25 +2,34 @@ import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { useState } from "react";
 
+import { ErrorAlert } from "@/components/Alert";
 import PageMeta from "@/components/PageMeta";
 import { authPage } from "@/utils/routes";
 import { supabase } from "@/utils/supabase";
 import { AuthError } from "@supabase/supabase-js";
-import { ErrorAlert } from "@/components/Alert";
 
 function LoginPage() {
   const [authError, setAuthError] = useState<AuthError | null>(null);
 
+  const handleSubmit = async (values: { email: string; password: string }) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    setAuthError(error);
+  };
+
   return (
     <PageMeta title="Sign in to your account">
-      <div className="flex min-h-full md:min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">
+          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-card dark:bg-card-dark py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             {authError && (
               <div className="mb-6">
                 <ErrorAlert message={authError.message} />
@@ -28,19 +37,10 @@ function LoginPage() {
             )}
             <Formik
               initialValues={{ email: "", password: "" }}
-              onSubmit={async (values) => {
-                const { email, password } = values;
-
-                const { error } = await supabase.auth.signInWithPassword({
-                  email,
-                  password,
-                });
-
-                setAuthError(error);
-              }}>
+              onSubmit={handleSubmit}>
               <Form className="space-y-6">
                 <div>
-                  <label htmlFor="email" className="x-form-label">
+                  <label htmlFor="email" className="x-label">
                     Email address
                   </label>
                   <div className="mt-1">
@@ -50,12 +50,12 @@ function LoginPage() {
                       name="email"
                       type="email"
                       autoComplete="email"
-                      className="x-form-input"
+                      className="x-input"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="password" className="x-form-label">
+                  <label htmlFor="password" className="x-label">
                     Password
                   </label>
                   <div className="mt-1">
@@ -65,24 +65,28 @@ function LoginPage() {
                       name="password"
                       type="password"
                       autoComplete="current-password"
-                      className="x-form-input"
+                      className="x-input"
                     />
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <input
+                    <Field
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="x-form-checkbox"
+                      className="x-checkbox"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block">
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-gray-900">
                       Remember me
                     </label>
                   </div>
-                  <div>
-                    <Link href="/forgot" className="x-link">
+                  <div className="text-sm">
+                    <Link
+                      href="/forgot"
+                      className="font-medium text-indigo-600 hover:text-indigo-500">
                       Forgot your password?
                     </Link>
                   </div>

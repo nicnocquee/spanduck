@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import { protectPage } from "@/utils/routes";
 
 function Dashboard() {
   return (
@@ -8,4 +9,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default protectPage(Dashboard);

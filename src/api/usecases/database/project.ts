@@ -1,0 +1,44 @@
+import { IQuery } from "@/api/interfaces/query";
+import { ProjectSchemaType } from "@/api/schemas/project";
+import getWithQuery from "@/api/utils/get-with-query";
+import { supabase } from "@/utils/supabase";
+
+export async function getProjects(query?: IQuery) {
+  let base = supabase.from("projects").select("*", {
+    count: "exact",
+  });
+  const response = await getWithQuery(base, query);
+
+  return response;
+}
+
+export async function getProjectByID(id: number) {
+  return await supabase
+    .from("projects")
+    .select("*", {
+      count: "exact",
+    })
+    .eq("id", id);
+}
+
+export async function createProject(body: ProjectSchemaType) {
+  return supabase.from("projects").insert({
+    ...body,
+    created_at: new Date(),
+    updated_at: new Date(),
+  });
+}
+
+export async function editProject(id: number, body: ProjectSchemaType) {
+  return supabase
+    .from("projects")
+    .update({
+      ...body,
+      updated_at: new Date(),
+    })
+    .eq("id", id);
+}
+
+export async function deleteProject(id: number) {
+  return supabase.from("projects").delete().eq("id", id);
+}

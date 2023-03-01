@@ -5,32 +5,42 @@ import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
 import { ITwitterData } from "@/api/interfaces/twitter";
 import { IImageData } from "@/api/interfaces/image";
+import {
+  TwitterImageMetadataSchemaType,
+  WebImageMetadataSchemaType,
+} from "../schemas/generated-image";
 
 Handlebars.registerHelper("isEqual", function (value1, value2) {
   return value1 === value2;
 });
 
 export class ImageTemplateEngine {
-  private data: ITwitterData | IImageData;
+  private data:
+    | ITwitterData
+    | IImageData
+    | WebImageMetadataSchemaType
+    | TwitterImageMetadataSchemaType;
 
-  private isTwitterData(data: any): data is ITwitterData {
-    return data.tweet_url !== undefined;
-  }
-
-  private isImageData(data: any): data is IImageData {
-    return data.url !== undefined;
+  private isTwitterData(
+    data: any
+  ): data is ITwitterData | TwitterImageMetadataSchemaType {
+    return data.tweet_id !== undefined;
   }
 
   private source = "";
 
-  constructor(data: ITwitterData | IImageData) {
+  constructor(
+    data:
+      | ITwitterData
+      | IImageData
+      | WebImageMetadataSchemaType
+      | TwitterImageMetadataSchemaType
+  ) {
     this.data = data;
 
     if (this.isTwitterData(data)) {
       this.source = "twitter";
-    }
-
-    if (this.isImageData(data)) {
+    } else {
       this.source = "url";
     }
   }

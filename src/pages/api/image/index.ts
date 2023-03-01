@@ -20,7 +20,7 @@ import {
   uploadToImageStorage,
 } from "@/api/usecases/storage/images";
 import { ImageTemplateEngine } from "@/api/utils/image-template-engine";
-import { nanoid, random } from "nanoid";
+import { nanoid } from "nanoid";
 
 export default async function handler(
   req: NextApiRequest,

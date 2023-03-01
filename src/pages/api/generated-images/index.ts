@@ -37,8 +37,12 @@ export default async function handler(
 
 async function get(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Get query params
     const { query } = req;
     const hasQuery = Object.keys(query).length > 0;
+
+    // Get data based on query params
+    // If ther is none, proceed with default values
     const { error, ...data } = await getGeneratedImages(
       hasQuery ? query : undefined
     );
@@ -76,6 +80,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Validate the request body
     const { body } = req;
     const validated = await CreateGeneratedImageSchema.parseAsync(body);
     const { project_id, url, template_id, type, user_id } = validated;
@@ -88,6 +93,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       fileName: string;
     };
 
+    // Generate image based on the type
     if (type === "url") {
       const { image, image_metadata, fileName } = await generateImageFromURL({
         url,
@@ -117,6 +123,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       };
     }
 
+    // Store the created image in the database
     const { error, ...data } = await createGeneratedImage({
       name: generatedData.fileName,
       image_metadata: generatedData.image_metadata,

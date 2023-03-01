@@ -28,8 +28,13 @@ export default async function handler(
 
 async function get(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Get query params
     const { query } = req;
-    const { error, ...data } = await getProjects(query);
+    const hasQuery = Object.keys(query).length > 0;
+
+    // Get data based on query params
+    // If ther is none, proceed with default values
+    const { error, ...data } = await getProjects(hasQuery ? query : undefined);
 
     if (error) {
       return handleResponse(res, {
@@ -64,8 +69,11 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Validate the request body
     const { body } = req;
     const validated = await ProjectSchema.parseAsync(body);
+
+    // Insert data to the database
     const { error, ...data } = await createProject(validated);
 
     if (error) {

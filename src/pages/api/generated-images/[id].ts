@@ -1,5 +1,5 @@
 import {
-  deleteGeneratedImage,
+  deleteGeneratedImageByID,
   getGeneratedImageByID,
 } from "@/api/usecases/database/generated-image";
 import handleResponse from "@/api/utils/handle-response";
@@ -30,6 +30,7 @@ export default async function handler(
 
 async function get(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Check for ID in query params
     const { id } = req.query;
     if (!id) {
       return handleResponse(res, {
@@ -42,6 +43,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Get generated image by ID
     const generatedImageID = parseInt(id as string, 10);
     const { error, ...data } = await getGeneratedImageByID(generatedImageID);
 
@@ -67,6 +69,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
 
 async function remove(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Check for ID in query params
     const { id } = req.query;
     if (!id) {
       return handleResponse(res, {
@@ -79,6 +82,7 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Find the generated image by ID
     const generatedImageID = parseInt(id as string, 10);
     const { error: findError, data: findData } = await getGeneratedImageByID(
       generatedImageID
@@ -104,7 +108,8 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    const { error, ...data } = await deleteGeneratedImage(generatedImageID);
+    // If found, delete the generated image
+    const { error, ...data } = await deleteGeneratedImageByID(generatedImageID);
 
     return handleResponse(res, {
       status: StatusCodes.NO_CONTENT,

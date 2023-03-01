@@ -29,19 +29,6 @@ export async function createGeneratedImage(body: GeneratedImageSchemaType) {
   });
 }
 
-export async function editGeneratedImage(
-  id: number,
-  body: GeneratedImageSchemaType
-) {
-  return supabase
-    .from("generated_images")
-    .update({
-      ...body,
-      updated_at: new Date(),
-    })
-    .eq("id", id);
-}
-
-export async function deleteGeneratedImage(id: number) {
+export async function deleteGeneratedImageByID(id: number) {
   return supabase.from("generated_images").delete().eq("id", id);
 }

@@ -35,6 +35,7 @@ export default async function handler(
 
 async function get(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Check for ID in query params
     const { id } = req.query;
     if (!id) {
       return handleResponse(res, {
@@ -47,6 +48,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Get project by ID
     const projectID = parseInt(id as string, 10);
     const { error, ...data } = await getProjectByID(projectID);
 
@@ -72,6 +74,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
 
 async function put(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Check for ID in query params
     const { body } = req;
     const { id } = req.query;
     if (!id) {
@@ -85,6 +88,7 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Find if project exists
     const projectID = parseInt(id as string, 10);
     const { error: findError, data: findData } = await getProjectByID(
       projectID
@@ -110,8 +114,19 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Validate the request body and edit the project
     const validated = await ProjectSchema.parseAsync(body);
     const { error, ...data } = await editProject(projectID, validated);
+    if (error) {
+      return handleResponse(res, {
+        status: StatusCodes.UNPROCESSABLE_ENTITY,
+        body: {
+          message: "Cannot find the project",
+          error,
+          ...data,
+        },
+      });
+    }
 
     return handleResponse(res, {
       status: StatusCodes.ACCEPTED,
@@ -135,6 +150,7 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
 
 async function remove(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // Check for ID in query params
     const { id } = req.query;
     if (!id) {
       return handleResponse(res, {
@@ -147,6 +163,7 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Get project by ID
     const projectID = parseInt(id as string, 10);
     const { error: findError, data: findData } = await getProjectByID(
       projectID
@@ -172,6 +189,7 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    // Delete the project
     const { error, ...data } = await deleteProject(projectID);
 
     return handleResponse(res, {

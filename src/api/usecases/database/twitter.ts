@@ -1,4 +1,4 @@
-import { ITwitterData, ITwitterDataBody } from "@/api/interfaces/twitter";
+import { ITwitterDataBody } from "@/api/interfaces/twitter";
 import { supabase } from "@/utils/supabase";
 
 export async function getTwitterData() {
@@ -14,5 +14,16 @@ export async function getTwitterDataByTweetID(tweetID: string) {
 }
 
 export async function createTwitterData(body: ITwitterDataBody) {
-  return await supabase.from("twitter").insert(body);
+  return await supabase.from("twitter").insert(body).select();
+}
+
+export async function updateTwitterDataByTweetID(
+  tweetID: string,
+  body: ITwitterDataBody
+) {
+  return await supabase
+    .from("twitter")
+    .update(body)
+    .eq("tweet_id", tweetID)
+    .select();
 }

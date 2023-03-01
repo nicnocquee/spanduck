@@ -22,11 +22,14 @@ export async function getProjectByID(id: number) {
 }
 
 export async function createProject(body: ProjectSchemaType) {
-  return supabase.from("projects").insert({
-    ...body,
-    created_at: new Date(),
-    updated_at: new Date(),
-  });
+  return supabase
+    .from("projects")
+    .insert({
+      ...body,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .select();
 }
 
 export async function editProject(id: number, body: ProjectSchemaType) {
@@ -36,7 +39,8 @@ export async function editProject(id: number, body: ProjectSchemaType) {
       ...body,
       updated_at: new Date(),
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select();
 }
 
 export async function deleteProject(id: number) {

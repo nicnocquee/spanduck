@@ -22,11 +22,14 @@ export async function getGeneratedImageByID(id: number) {
 }
 
 export async function createGeneratedImage(body: GeneratedImageSchemaType) {
-  return supabase.from("generated_images").insert({
-    ...body,
-    created_at: new Date(),
-    updated_at: new Date(),
-  });
+  return supabase
+    .from("generated_images")
+    .insert({
+      ...body,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .select();
 }
 
 export async function deleteGeneratedImageByID(id: number) {

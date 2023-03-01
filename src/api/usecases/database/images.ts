@@ -10,5 +10,9 @@ export async function getImageDataByURL(url: string) {
 }
 
 export async function createImageData(body: IImageData) {
-  return await supabase.from("images").insert(body);
+  return await supabase.from("images").insert(body).select();
+}
+
+export async function updateImageDataByID(id: number, body: IImageData) {
+  return await supabase.from("images").update(body).eq("id", id).select();
 }

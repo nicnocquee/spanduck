@@ -24,7 +24,7 @@ export class ImageTemplateEngine {
   private isTwitterData(
     data: any
   ): data is ITwitterData | TwitterImageMetadataSchemaType {
-    return data.tweet_id !== undefined;
+    return data.tweet_url !== undefined || data.tweet_id !== undefined;
   }
 
   private source = "";

@@ -10,13 +10,13 @@ import handleResponse, {
 import {
   createImageData,
   getImageDataByURL,
+  updateImageDataByID,
 } from "@/api/usecases/database/images";
 import { IImageData } from "@/api/interfaces/image";
 import {
   createImageStorage,
   getImageObjectURL,
   getImageStorage,
-  getImageStorageByObjectName,
   uploadToImageStorage,
 } from "@/api/usecases/storage/images";
 import { ImageTemplateEngine } from "@/api/utils/image-template-engine";
@@ -80,31 +80,33 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
     // Get the metadata
     const result = await parser(url);
 
-    // Check if there is any existing data
+    // Check if there is any existing metadata
     const { data: found, error: findError } = await getImageDataByURL(
       result.meta.url || result.og.url || url
     );
 
-    // If exists, return from Database
-    // Else, fetch from the URL
-    let metadata: IImageData;
-    if (found && found.length === 1 && !findError) {
-      console.debug("Image Metadata found. Using previous data...");
-      const [foundMetadata] = found;
-      metadata = foundMetadata;
-    } else {
-      console.debug("Image Metadata not found. Generating...");
-      metadata = {
-        unique_id: nanoID,
-        url: result.meta.url || result.og.url || url,
-        title: result.meta.title || result.og.title || "",
-        description: result.meta.description || result.og.description,
-        image: result.images?.[0] || result.og.image,
-        site_name: result.meta.site_name || result.og.site_name,
-        type: result.meta.type || result.og.type,
-      };
+    // Update the data if metadata found
+    // Create the data if metadata not found
+    let metadata: IImageData = {
+      unique_id: nanoID,
+      url: result.meta.url || result.og.url || url,
+      title: result.meta.title || result.og.title || "",
+      description: result.meta.description || result.og.description,
+      image: result.images?.[0] || result.og.image,
+      site_name: result.meta.site_name || result.og.site_name,
+      type: result.meta.type || result.og.type,
+    };
 
-      // Create a new entry in the database
+    if (found && found.length === 1 && !findError) {
+      const { error: updateError } = await updateImageDataByID(
+        found[0].id,
+        metadata
+      );
+
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+    } else {
       const { error: createError } = await createImageData(metadata);
 
       if (createError) {
@@ -112,56 +114,48 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    // Check if image is already generated
+    // Generate image
     let imageURL: string;
     let outputPath: string = "";
     const fileName = `${found?.[0]?.unique_id || nanoID}_${
       params.templateID
     }.png`;
-    const { data: imageData, error: imageError } =
-      await getImageStorageByObjectName(fileName);
 
-    if (imageData && !imageError) {
-      console.debug("Generated image found. Using previous data...");
-      imageURL = await getImageObjectURL(fileName);
-    } else {
-      console.debug("Generated image not found. Generating...");
-      // Check if the template exists
-      if (!fs.existsSync(path.resolve(`templates/${params.templateID}.html`))) {
-        return handleResponse(res, {
-          status: StatusCodes.UNPROCESSABLE_ENTITY,
-          body: {
-            message: "Template not found!",
-            data: null,
-          },
-        });
-      }
-
-      // Generate image
-      const ITE = new ImageTemplateEngine(metadata);
-      outputPath = await ITE.generate(
-        parseInt(params.templateID as string, 10) || 1,
-        fileName
-      );
-
-      // Check if bucket existed
-      const isBucketExists = await getImageStorage();
-      if (!isBucketExists) {
-        await createImageStorage();
-      }
-
-      // Read file as buffer and upload the file to bucket
-      const file = await fsPromises.readFile(outputPath);
-      const { error } = await uploadToImageStorage(fileName, file, {
-        upsert: true,
+    // Check if the template exists
+    if (!fs.existsSync(path.resolve(`templates/${params.templateID}.html`))) {
+      return handleResponse(res, {
+        status: StatusCodes.UNPROCESSABLE_ENTITY,
+        body: {
+          message: "Template not found!",
+          data: null,
+        },
       });
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      // Get download URL for image
-      imageURL = await getImageObjectURL(fileName);
     }
+
+    // Render the image
+    const ITE = new ImageTemplateEngine(metadata);
+    outputPath = await ITE.generate(
+      parseInt(params.templateID as string, 10) || 1,
+      fileName
+    );
+
+    // Check if bucket existed
+    const isBucketExists = await getImageStorage();
+    if (!isBucketExists) {
+      await createImageStorage();
+    }
+
+    // Read file as buffer and upload the file to bucket
+    const file = await fsPromises.readFile(outputPath);
+    const { error } = await uploadToImageStorage(fileName, file, {
+      upsert: true,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // Get download URL for image
+    imageURL = await getImageObjectURL(fileName);
 
     if (parseInt(params.dl as string, 10) === 1) {
       return handleFileResponse(res, fs.readFileSync(outputPath));

@@ -22,7 +22,7 @@ const navigation = [
 
 export type DashboardLayoutProps = {
   title: string;
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
 };
 
 export default function DashboardLayout({
@@ -116,7 +116,7 @@ export default function DashboardLayout({
                   <div className="flex flex-shrink-0 border-t border-indigo-800 p-4">
                     <Link href="/" className="group block flex-shrink-0">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 rounded-full">
+                        <div className="flex h-10 w-10 items-center justify-center bg-gray-100 rounded-full">
                           <p>{avatarText}</p>
                         </div>
                         <div className="ml-3">
@@ -196,15 +196,8 @@ export default function DashboardLayout({
             </button>
           </div>
           <main className="flex-1">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  {title}
-                </h1>
-              </div>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-                {children}
-              </div>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+              {children}
             </div>
           </main>
         </div>

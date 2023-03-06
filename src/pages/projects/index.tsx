@@ -1,28 +1,55 @@
+import { useEffect, useState } from "react";
+
+import AddProjectModal from "@/components/AddProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
 import { protectPage } from "@/utils/routes";
-import { useState } from "react";
+
+export type Project = {
+  id: string;
+  name: string;
+  description: string;
+};
 
 function Projects() {
-  const [projects, setProjects] = useState([
-    {
-      id: "project-x",
-      name: "Project X",
-      description: "The best project ever",
-    },
-    {
-      id: "project-y",
-      name: "Project Y",
-      description: "The best project ever",
-    },
-    {
-      id: "project-z",
-      name: "Project Z",
-      description: "The best project ever",
-    },
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  useEffect(() => {
+    // TODO
+    setProjects([
+      {
+        id: "project-x",
+        name: "Project X",
+        description: "The best project ever",
+      },
+      {
+        id: "project-y",
+        name: "Project Y",
+        description: "The best project ever",
+      },
+      {
+        id: "project-z",
+        name: "Project Z",
+        description: "The best project ever",
+      },
+    ]);
+  }, []);
 
   return (
     <DashboardLayout title="Projects">
+      <AddProjectModal
+        open={addModalOpen}
+        setOpen={setAddModalOpen}
+        projectToEdit={null}
+      />
+      <AddProjectModal
+        open={editModalOpen}
+        setOpen={setEditModalOpen}
+        projectToEdit={projectToEdit}
+      />
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold leading-6 text-gray-900">
@@ -32,9 +59,10 @@ function Projects() {
             A list of all the projects in your account.
           </p>
         </div>
-        <div className="sm:ml-16 sm:flex-none">
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
             type="button"
+            onClick={() => setAddModalOpen(true)}
             className="block rounded bg-indigo-600 py-2 px-3 text-center text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Add project
           </button>
@@ -75,7 +103,10 @@ function Projects() {
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <button
-                          onClick={() => {}}
+                          onClick={() => {
+                            setProjectToEdit(project);
+                            setEditModalOpen(true);
+                          }}
                           className="text-indigo-600 hover:text-indigo-900">
                           Edit
                         </button>

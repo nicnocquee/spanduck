@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import AddProjectModal from "@/components/AddProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
+import { projects as projectsData } from "@/samples/projects";
 import { protectPage } from "@/utils/routes";
 
 export type Project = {
@@ -19,23 +20,7 @@ function Projects() {
 
   useEffect(() => {
     // TODO
-    setProjects([
-      {
-        id: "project-x",
-        name: "Project X",
-        description: "The best project ever",
-      },
-      {
-        id: "project-y",
-        name: "Project Y",
-        description: "The best project ever",
-      },
-      {
-        id: "project-z",
-        name: "Project Z",
-        description: "The best project ever",
-      },
-    ]);
+    setProjects(projectsData);
   }, []);
 
   return (

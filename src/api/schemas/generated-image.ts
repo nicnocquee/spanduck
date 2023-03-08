@@ -25,7 +25,7 @@ export const WebImageMetadataSchema = z.object({
 });
 export type WebImageMetadataSchemaType = z.infer<typeof WebImageMetadataSchema>;
 
-export const CreateGeneratedImageSchema = z.object({
+export const GeneratedImageCreateSchema = z.object({
   url: z.string(),
   type: z.enum(["twitter", "url"]),
   user_id: z.string(),
@@ -34,6 +34,7 @@ export const CreateGeneratedImageSchema = z.object({
 });
 
 export const GeneratedImageSchema = z.object({
+  id: z.number(),
   name: z.string(),
   type: z.enum(["twitter", "url"]),
   url: z.string(),
@@ -46,7 +47,7 @@ export const GeneratedImageSchema = z.object({
   updated_at: z.string().datetime().optional(),
 });
 
-export type CreateGeneratedImageSchemaType = z.infer<
-  typeof CreateGeneratedImageSchema
+export type GeneratedImageCreateSchemaType = z.infer<
+  typeof GeneratedImageCreateSchema
 >;
 export type GeneratedImageSchemaType = z.infer<typeof GeneratedImageSchema>;

@@ -68,6 +68,7 @@ export default async function generateImageFromTwitter({
     unique_id: nanoID,
     ...image_metadata,
     tweet_id,
+    content: image_metadata.content.trimStart(),
   });
   outputPath = await ITE.generate(template_id || 1, fileName);
 

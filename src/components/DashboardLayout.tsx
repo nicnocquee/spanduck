@@ -13,6 +13,7 @@ import {
   CubeIcon,
   NewspaperIcon,
 } from "@heroicons/react/24/outline";
+import { supabase } from "@/utils/supabase";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -36,6 +37,10 @@ export default function DashboardLayout({
 
   const user = data?.user_metadata;
   const avatarText = user?.name?.split(" ")?.[0]?.[0];
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <>
@@ -123,9 +128,11 @@ export default function DashboardLayout({
                           <p className="text-base font-medium text-white">
                             {user?.name}
                           </p>
-                          <p className="text-sm font-medium text-indigo-200 group-hover:text-white">
-                            View profile
-                          </p>
+                          <button
+                            onClick={() => handleLogout()}
+                            className="text-sm font-medium text-indigo-200 group-hover:text-white">
+                            Logout
+                          </button>
                         </div>
                       </div>
                     </Link>
@@ -176,9 +183,11 @@ export default function DashboardLayout({
                     <p className="text-sm font-medium text-white">
                       {user?.name}
                     </p>
-                    <p className="text-xs font-medium text-indigo-200 group-hover:text-white">
-                      View profile
-                    </p>
+                    <button
+                      onClick={() => handleLogout()}
+                      className="text-xs font-medium text-indigo-200 group-hover:text-white">
+                      Logout
+                    </button>
                   </div>
                 </div>
               </Link>

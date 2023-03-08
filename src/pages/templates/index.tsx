@@ -1,12 +1,14 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 import AddToProjectModal from "@/components/AddToProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
 import { templates as templatesData } from "@/samples/templates";
-import { projects as projectsData } from "@/samples/projects";
 import { protectPage } from "@/utils/routes";
-import { Project } from "../projects";
+import buildQueryParams from "@/utils/build-query-params";
+import fetcher from "@/config/axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type Template = {
   id: string;
@@ -16,13 +18,35 @@ export type Template = {
 };
 
 function Templates() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const user = useAuth();
+  const query = {
+    order: {
+      updated_at: "desc",
+    },
+    filter: {
+      user_id: user.data?.id,
+    },
+    from: 0,
+    to: 10,
+    limit: 10,
+  };
+
+  const { data: projects } = useQuery(
+    "projects",
+    async () => {
+      const queryParams = buildQueryParams(query);
+      const { data } = await fetcher().get(`/projects?${queryParams}`);
+      return data.data;
+    },
+    {
+      initialData: [],
+      enabled: !!user.data?.id,
+    }
+  );
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template>();
 
   useEffect(() => {
-    // TODO
-    setProjects(projectsData);
     setTemplates(templatesData);
   }, []);
 

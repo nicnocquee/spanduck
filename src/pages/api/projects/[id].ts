@@ -1,4 +1,4 @@
-import { ProjectSchema } from "@/api/schemas/project";
+import { ProjectCreateEditSchema, ProjectSchema } from "@/api/schemas/project";
 import {
   deleteProject,
   editProject,
@@ -115,7 +115,7 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Validate the request body and edit the project
-    const validated = await ProjectSchema.parseAsync(body);
+    const validated = await ProjectCreateEditSchema.parseAsync(body);
     const { error, ...data } = await editProject(projectID, validated);
     if (error) {
       return handleResponse(res, {

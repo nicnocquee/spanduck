@@ -1,27 +1,46 @@
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
+import { useQuery } from "react-query";
 import AddProjectModal from "@/components/AddProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
-import { projects as projectsData } from "@/samples/projects";
 import { protectPage } from "@/utils/routes";
-
-export type Project = {
-  id: string;
-  name: string;
-  description: string;
-};
+import { useAuth } from "@/contexts/AuthContext";
+import fetcher from "@/config/axios";
+import { ProjectSchemaType } from "@/api/schemas/project";
+import buildQueryParams from "@/utils/build-query-params";
+import DeleteProjectModal from "@/components/DeleteProjectModal";
 
 function Projects() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+  const user = useAuth();
+  const query = {
+    order: {
+      updated_at: "desc",
+    },
+    filter: {
+      user_id: user.data?.id,
+    },
+    from: 0,
+    to: 10,
+    limit: 10,
+  };
 
+  const { data: projects, refetch } = useQuery(
+    "projects",
+    async () => {
+      const queryParams = buildQueryParams(query);
+      const { data } = await fetcher().get(`/projects?${queryParams}`);
+      return data.data;
+    },
+    {
+      initialData: [],
+      enabled: !!user.data?.id,
+    }
+  );
+
+  const [selectedProject, setSelectedProject] =
+    useState<ProjectSchemaType | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
-  useEffect(() => {
-    // TODO
-    setProjects(projectsData);
-  }, []);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   return (
     <DashboardLayout title="Projects">
@@ -29,11 +48,19 @@ function Projects() {
         open={addModalOpen}
         setOpen={setAddModalOpen}
         projectToEdit={null}
+        onClose={() => refetch()}
       />
       <AddProjectModal
         open={editModalOpen}
         setOpen={setEditModalOpen}
-        projectToEdit={projectToEdit}
+        projectToEdit={selectedProject}
+        onClose={() => refetch()}
+      />
+      <DeleteProjectModal
+        open={deleteModalOpen}
+        setOpen={setDeleteModalOpen}
+        projectToDelete={selectedProject}
+        onDelete={() => refetch()}
       />
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
@@ -78,7 +105,7 @@ function Projects() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {projects.map((project) => (
+                  {projects.map((project: ProjectSchemaType) => (
                     <tr key={project.id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {project.name}
@@ -89,11 +116,21 @@ function Projects() {
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <button
                           onClick={() => {
-                            setProjectToEdit(project);
+                            setSelectedProject(project);
                             setEditModalOpen(true);
                           }}
                           className="text-indigo-600 hover:text-indigo-900">
                           Edit
+                        </button>
+                      </td>
+                      <td className="w-4 relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <button
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="text-red-600 hover:text-red-900">
+                          Delete
                         </button>
                       </td>
                     </tr>

@@ -6,12 +6,12 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { ErrorAlert } from "./Alert";
 import { Template } from "@/pages/templates";
-import { Project } from "@/pages/projects";
+import { ProjectSchemaType } from "@/api/schemas/project";
 
 type AddToProjectModalProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  projects: Project[];
+  projects: ProjectSchemaType[];
   selectedTemplate?: Template;
 };
 

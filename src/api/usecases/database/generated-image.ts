@@ -1,5 +1,8 @@
 import { IQuery } from "@/api/interfaces/query";
-import { GeneratedImageSchemaType } from "@/api/schemas/generated-image";
+import {
+  GeneratedImageCreateSchemaType,
+  GeneratedImageSchemaType,
+} from "@/api/schemas/generated-image";
 import getWithQuery from "@/api/utils/get-with-query";
 import { supabase } from "@/utils/supabase";
 
@@ -21,7 +24,9 @@ export async function getGeneratedImageByID(id: number) {
     .eq("id", id);
 }
 
-export async function createGeneratedImage(body: GeneratedImageSchemaType) {
+export async function createGeneratedImage(
+  body: GeneratedImageCreateSchemaType | GeneratedImageSchemaType
+) {
   return supabase
     .from("generated_images")
     .insert({

@@ -21,7 +21,7 @@
         {{#if (isEqual source 'twitter')}} 
           {{#if images.length}}
             <img
-              class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center"
+              class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center opacity-50"
               src="{{images.[0]}}" />
           {{/if}} 
         {{/if}} 
@@ -29,11 +29,12 @@
         {{#if (isEqual source 'url')}} 
           {{#if image.src}}
             <img
-              class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center"
+              class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center opacity-50"
               src="{{image.src}}" />
-          {{/if}} 
-          {{#if image.src}}
-            <img class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center" src="{{image}}" />
+          {{else}}
+            <img
+              class="w-[950px] h-[950px] absolute left-0 top-0 object-cover object-center opacity-50"
+              src="{{image}}" />
           {{/if}}
         {{/if}}
 
@@ -106,7 +107,7 @@
             <p class="whitespace-normal">{{description}}</p>
           {{/if}}
           {{#if (isEqual source 'twitter')}}
-            <p class="whitespace-pre-wrap">
+            <p class="whitespace-pre-line">
               {{content}} 
             </p>
           {{/if}}

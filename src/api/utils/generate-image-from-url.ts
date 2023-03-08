@@ -36,14 +36,16 @@ export default async function generateImageFromURL({
   // Get the metadata
   const result = await parser(url);
 
+  console.log(result);
+
   // If exists, return from Database
   // Else, fetch from the URL
   const image_metadata: WebImageMetadataSchemaType = {
-    title: result.meta.title || result.og.title || "",
-    description: result.meta.description || result.og.description || "",
-    image: result.images?.[0] || result.og.image || "",
-    site_name: result.meta.site_name || result.og.site_name || "",
-    type: result.meta.type || result.og.type || "",
+    title: result.og.title || result.meta.title || "",
+    description: result.og.description || result.meta.description || "",
+    image: result.og.image || result.images?.[0] || "",
+    site_name: result.og.site_name || result.meta.site_name || "",
+    type: result.og.type || result.meta.type || "",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

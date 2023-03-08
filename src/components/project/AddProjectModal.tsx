@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ErrorAlert } from "./Alert";
+import { ErrorAlert } from "../Alert";
 import { ProjectSchemaType } from "@/api/schemas/project";
 import fetcher from "@/config/axios";
 import { toast } from "react-hot-toast";
@@ -28,6 +28,7 @@ export default function AddProjectModal({
   onClose,
 }: AddProjectModalProps) {
   const user = useAuth();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (values: FormValues) => {
@@ -39,6 +40,7 @@ export default function AddProjectModal({
   };
 
   const handleAdd = async (values: FormValues) => {
+    setIsLoading(true);
     try {
       await fetcher().post(`/projects`, {
         ...values,
@@ -50,10 +52,13 @@ export default function AddProjectModal({
       onClose();
     } catch (e: any) {
       setErrorMessage(e.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleEdit = async (values: FormValues) => {
+    setIsLoading(true);
     try {
       await fetcher().put(`/projects/${projectToEdit?.id}`, {
         ...values,
@@ -66,6 +71,8 @@ export default function AddProjectModal({
       onClose();
     } catch (e: any) {
       setErrorMessage(e.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -156,8 +163,9 @@ export default function AddProjectModal({
                     <div className="mt-5 sm:mt-6">
                       <button
                         type="submit"
+                        disabled={isLoading}
                         className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Save
+                        {isLoading ? "Loading..." : "Save"}
                       </button>
                     </div>
                   </Form>

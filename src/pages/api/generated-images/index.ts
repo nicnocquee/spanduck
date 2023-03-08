@@ -1,5 +1,5 @@
 import {
-  CreateGeneratedImageSchema,
+  GeneratedImageCreateSchema,
   TwitterImageMetadataSchemaType,
   WebImageMetadataSchemaType,
 } from "@/api/schemas/generated-image";
@@ -82,7 +82,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
     // Validate the request body
     const { body } = req;
-    const validated = await CreateGeneratedImageSchema.parseAsync(body);
+    const validated = await GeneratedImageCreateSchema.parseAsync(body);
     const { project_id, url, template_id, type, user_id } = validated;
 
     let generatedData: {

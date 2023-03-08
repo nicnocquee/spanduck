@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ProjectSchemaType } from "@/api/schemas/project";
 import fetcher from "@/config/axios";
 import { toast } from "react-hot-toast";
+import { ErrorAlert } from "../Alert";
 
 type DeleteProjectModalProps = {
   open: boolean;
@@ -17,9 +18,11 @@ export default function DeleteProjectModal({
   setOpen,
   onDelete,
 }: DeleteProjectModalProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleDelete = async () => {
+    setIsLoading(true);
     try {
       await fetcher().delete(`/projects/${projectToDelete?.id}`);
 
@@ -28,6 +31,8 @@ export default function DeleteProjectModal({
       onDelete();
     } catch (e: any) {
       setErrorMessage(e.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,6 +66,11 @@ export default function DeleteProjectModal({
                   className="text-lg font-medium leading-6 text-gray-900">
                   Confirmation
                 </Dialog.Title>
+                {errorMessage && (
+                  <div className="mt-4">
+                    <ErrorAlert message={errorMessage} />
+                  </div>
+                )}
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     Are you sure you want to delete this project?
@@ -76,9 +86,10 @@ export default function DeleteProjectModal({
                   </button>
                   <button
                     type="button"
+                    disabled={isLoading}
                     className="w-full justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     onClick={() => handleDelete()}>
-                    Delete
+                    {isLoading ? "Loading..." : "Delete"}
                   </button>
                 </div>
               </Dialog.Panel>

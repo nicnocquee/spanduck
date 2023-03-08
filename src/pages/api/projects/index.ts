@@ -1,4 +1,4 @@
-import { ProjectSchema } from "@/api/schemas/project";
+import { ProjectCreateEditSchema, ProjectSchema } from "@/api/schemas/project";
 import { createProject, getProjects } from "@/api/usecases/database//project";
 import handleResponse from "@/api/utils/handle-response";
 import { StatusCodes } from "http-status-codes";
@@ -37,6 +37,7 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
     const { error, ...data } = await getProjects(hasQuery ? query : undefined);
 
     if (error) {
+      console.error(error);
       return handleResponse(res, {
         status: StatusCodes.BAD_REQUEST,
         body: {
@@ -71,7 +72,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
     // Validate the request body
     const { body } = req;
-    const validated = await ProjectSchema.parseAsync(body);
+    const validated = await ProjectCreateEditSchema.parseAsync(body);
 
     // Insert data to the database
     const { error, ...data } = await createProject(validated);

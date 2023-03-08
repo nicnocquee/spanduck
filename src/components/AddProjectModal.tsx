@@ -1,16 +1,19 @@
-import { Field, Form, Formik } from "formik";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
-
-import { Project } from "@/pages/projects";
+import { Field, Form, Formik } from "formik";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ErrorAlert } from "./Alert";
+import { ProjectSchemaType } from "@/api/schemas/project";
+import fetcher from "@/config/axios";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 type AddProjectModalProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  projectToEdit: Project | null;
+  projectToEdit: ProjectSchemaType | null;
+  onClose: () => void;
 };
 
 type FormValues = {
@@ -22,7 +25,9 @@ export default function AddProjectModal({
   projectToEdit,
   open,
   setOpen,
+  onClose,
 }: AddProjectModalProps) {
+  const user = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (values: FormValues) => {
@@ -33,14 +38,35 @@ export default function AddProjectModal({
     }
   };
 
-  const handleAdd = (values: FormValues) => {
-    // TODO
-    setErrorMessage("Not implemented yet");
+  const handleAdd = async (values: FormValues) => {
+    try {
+      await fetcher().post(`/projects`, {
+        ...values,
+        user_id: user.data?.id,
+      });
+
+      toast.success("Successfully created the project");
+      setOpen(false);
+      onClose();
+    } catch (e: any) {
+      setErrorMessage(e.response.data.message);
+    }
   };
 
-  const handleEdit = (values: FormValues) => {
-    // TODO
-    setErrorMessage("Not implemented yet");
+  const handleEdit = async (values: FormValues) => {
+    try {
+      await fetcher().put(`/projects/${projectToEdit?.id}`, {
+        ...values,
+        id: projectToEdit?.id,
+        user_id: user.data?.id,
+      });
+
+      toast.success("Successfully edited the project");
+      setOpen(false);
+      onClose();
+    } catch (e: any) {
+      setErrorMessage(e.response.data.message);
+    }
   };
 
   return (

@@ -12,7 +12,11 @@ export default function getWithQuery(
       const filters = filter.split(";");
       for (let f of filters) {
         const [key, value] = f.split(":");
-        base = base.ilike(key, `%${value}%`);
+        if (key.endsWith("_id")) {
+          base = base.eq(key, value);
+        } else {
+          base = base.ilike(key, `%${value}%`);
+        }
       }
     }
 

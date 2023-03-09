@@ -27,17 +27,16 @@
           Created with by @spanduck
         </div>
 
-        {{!-- Content --}}
         <div class="w-[820px] h-[630px] absolute left-[55px] top-[265px]">
+          {{!-- Content --}}
           <div
             class="text-[#0a0908] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px]"
             style="font: 700 58px 'Inter', sans-serif">
             {{#if (isEqual source 'url')}}
-            <p class="whitespace-normal">{{description}}</p>
+              <p class="whitespace-normal">{{description}}</p>
             {{/if}} 
-            
             {{#if (isEqual source 'twitter')}}
-            <p class="whitespace-pre-line">{{content}}</p>
+              <p class="whitespace-pre-line">{{content}}</p>
             {{/if}}
           </div>
         </div>
@@ -46,34 +45,32 @@
           class="absolute right-[65px] left-[65px] bottom-[729px] top-[65px]">
           {{!-- Twitter User Details --}} 
           {{#if (isEqual source 'twitter')}}
-          <div
-            class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{display_name}}
-          </div>
-
-          <div
-            class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
-            style="font: 400 24px 'Inter', sans-serif">
-            @{{username}}
-          </div>
+            <div
+              class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
+              style="font: 400 36px 'Inter', sans-serif">
+              {{display_name}}
+            </div>
+            <div
+              class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
+              style="font: 400 24px 'Inter', sans-serif">
+              @{{username}}
+            </div>
           {{/if}}
 
           <div
             class="absolute right-[65px] left-[65px] bottom-[729px] top-[65px]">
             {{!-- URL Details --}} 
             {{#if (isEqual source 'url')}}
-            <div
-              class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
-              style="font: 400 36px 'Inter', sans-serif">
-              {{title}}
-            </div>
-
-            <div
-              class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
-              style="font: 400 24px 'Inter', sans-serif">
-              {{url}}
-            </div>
+              <div
+                class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
+                style="font: 400 36px 'Inter', sans-serif">
+                {{title}}
+              </div>
+              <div
+                class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
+                style="font: 400 24px 'Inter', sans-serif">
+                {{url}}
+              </div>
             {{/if}}
           </div>
 
@@ -82,8 +79,8 @@
           <img
             class="rounded-[50%] w-[120px] h-[120px] absolute left-0 top-[17px]"
             src="{{avatar}}" />
+          {{/if}}
         </div>
-        {{/if}}
       </div>
     </div>
   </body>

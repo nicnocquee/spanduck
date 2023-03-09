@@ -23,54 +23,68 @@
         "></div>
 
       <div
-        class="bg-[rgba(40,39,39,0.20)] border-[5px] w-[950px] h-[950px] absolute left-[65px] top-[65px] overflow-hidden"
-        style="border: solid #ffffff">
-        <div
-          class="text-[#ffffff] text-left absolute left-[267px] top-[749px]"
-          style="font: 400 36px 'Inter', sans-serif">
-          {{display_name}}
-        </div>
-
-        <div
-          class="text-[#ffffff] text-left absolute left-[267px] top-[804px]"
-          style="font: 400 24px 'Inter', sans-serif">
-          {{username}}
-        </div>
-
-        <img
-          class="rounded-[50%] w-[127px] h-[126px] absolute left-28 top-[728px]"
-          src="{{avatar}}" />
-
-        <div
-          class="text-[#ffffff] text-left absolute left-[93px] top-[137px] w-[711px] h-[413px]"
-          style="font: 700 64px 'Inter', sans-serif">
-          <span>{{content}}</span>
-        </div>
-
-        <div class="w-[205px] h-[17px] absolute left-[653px] top-[895px]">
+        class="bg-[rgba(40,39,39,0.20)] border-solid border-[#ffffff] border-[5px] w-[950px] h-[950px] absolute left-[65px] top-[65px] overflow-hidden">
+        <div class="w-[820px] h-[630px] absolute left-[65px] top-[231px]">
+          {{!-- Content --}}
           <div
-            class="text-left absolute left-0 top-0"
-            style="font: 400 14px 'Inter', sans-serif">
-            <span
-              ><span class="text-[#ffffff] created-with----by--spanduck2-span"
-                >Created with</span
-              ><span class="created-with----by--spanduck2-span2"> ❤️ </span
-              ><span class="text-[#ffffff] created-with----by--spanduck2-span3"
-                >by @spanduck</span
-              ></span
-            >
+            class="text-[rgba(245,245,245,0.80)] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px]"
+            style="font: 700 58px 'Inter', sans-serif">
+            {{#if (isEqual source 'url')}}
+              <p class="whitespace-normal">{{description}}</p>
+            {{/if}}
+            {{#if (isEqual source 'twitter')}}
+              <p class="whitespace-pre-line">
+                {{content}} 
+              </p>
+            {{/if}}
           </div>
         </div>
-      </div>
 
-      <div
-        class="w-[750px] h-0 absolute left-[165px] top-[753.5px]"
-        style="
-          border: solid #ffffff;
-          border-width: 1px 0 0 0;
-          transform-origin: 0 0;
-          transform: rotate(0deg) scale(1, 1);
-        "></div>
+        <div
+          class="absolute right-[65px] left-[65px] bottom-[769px] top-[25px]">
+          {{!-- Twitter User Details --}}
+          {{#if (isEqual source 'twitter')}}
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
+              style="font: 400 36px 'Inter', sans-serif">
+              {{display_name}} 
+            </div>
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[97px]"
+              style="font: 400 24px 'Inter', sans-serif">
+              @{{username}}
+            </div>
+          {{/if}}
+
+          {{!-- URL Details --}}
+          {{#if (isEqual source 'url')}}
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
+              style="font: 400 36px 'Inter', sans-serif">
+              {{title}} 
+            </div>
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[97px]"
+              style="font: 400 18px 'Inter', sans-serif">
+              {{url}}
+            </div>
+          {{/if}}
+
+          <!-- Twitter Avatar -->
+          {{#if (isEqual source 'twitter')}}
+            <img
+              class="rounded-[50%] w-[120px] h-[120px] absolute left-0 top-[17px]"
+              src="{{avatar}}" />
+          {{/if}}
+        </div>
+
+        <!-- Watermark -->
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute right-[391px] bottom-[25px]"
+          style="font: 600 12px 'Inter', sans-serif">
+          Created with by @spanduck
+        </div>
+      </div>
     </div>
   </body>
 </html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 500px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#598392] w-[500px] h-[500px] relative overflow-hidden">
+      <div class="w-[350px] h-[270px] absolute left-[25px] top-[105px]">
+        <div class="w-[210px] h-[148px] absolute left-0 top-[-55px]">
+          <!-- Twitter Avatar -->
+          {{#if (isEqual source 'twitter')}}
+            <img
+              class="rounded-[50%] w-[50px] h-[50px] absolute left-20 top-14"
+              src="{{avatar}}" />
+          {{/if}}
+
+          {{!-- Twitter User Details --}}
+          {{#if (isEqual source 'twitter')}}
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-left absolute left-7 top-[25px]"
+              style="font: 400 18px 'Inter', sans-serif">
+              @{{username}}
+            </div>
+            <div
+              class="text-[rgba(255,255,255,0.90)] text-center absolute left-2.5 top-2"
+              style="font: 400 14px 'Inter', sans-serif">
+              {{display_name}} 
+            </div>
+          {{/if}}
+        </div>
+
+        {{!-- Content --}}
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute left-[217px] top-40 w-[220px] flex items-center justify-start"
+          style="font: 500 16px 'Inter', sans-serif">
+          {{#if (isEqual source 'url')}}
+            <p class="whitespace-normal">{{description}}</p>
+          {{/if}}
+          {{#if (isEqual source 'twitter')}}
+            <p class="whitespace-pre-line">
+              {{content}} 
+            </p>
+          {{/if}}
+        </div>
+      </div>
+
+      <!-- Background -->
+      {{#if (isEqual source 'twitter')}} 
+        {{#if images.length}}
+          <img
+            class="w-[200px] h-[200px] absolute left-[275px] top-[25px]"
+            src="{{images.[0]}}" />
+          <img
+            class="w-[200px] h-[200px] absolute left-[25px] top-[275px]"
+            src="{{images.[1]}}" />
+        {{/if}} 
+      {{/if}} 
+
+      {{#if (isEqual source 'url')}} 
+        {{#if images.src}}
+          <img
+            class="w-[200px] h-[200px] absolute left-[275px] top-[25px]"
+            src="{{images.src}}" />
+        {{else}}
+        <img
+            class="w-[200px] h-[200px] absolute left-[275px] top-[25px]"
+            src="{{image}}" />
+        {{/if}} 
+      {{/if}} 
+    </div>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 500px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#0a0908] w-[500px] h-[500px] relative overflow-hidden">
+      <div
+        class="border-solid border-[#ffffff] border-[5px] w-[460px] h-[460px] absolute left-5 top-5 overflow-hidden">
+        <div
+          class="flex flex-row gap-0 items-start justify-start w-[390px] h-[270px] absolute left-[31px] top-[38px] overflow-hidden">
+          {{!-- Content --}}
+          <div
+            class="text-[#ffffff] text-left relative w-[390px] flex items-center justify-start"
+            style="font: 700 27px 'Inter', sans-serif">
+            {{#if (isEqual source 'url')}}
+              <p class="whitespace-normal">{{description}}</p>
+            {{/if}}
+            {{#if (isEqual source 'twitter')}}
+              <p class="whitespace-pre-line">
+                {{content}} 
+              </p>
+            {{/if}}
+          </div>
+        </div>
+
+        <div class="w-[390px] h-[50px] absolute left-[34px] top-[338px]">
+          {{!-- Twitter User Details --}}
+          {{#if (isEqual source 'twitter')}}
+            <div
+              class="text-[#ffffff] text-left absolute left-[60px] top-[25px]"
+              style="font: 400 18px 'Inter', sans-serif">
+              @{{username}}
+            </div>
+            <div
+              class="text-[#ffffff] text-left absolute left-[60px] top-[3px]"
+              style="font: 400 14px 'Inter', sans-serif">
+              {{display_name}} 
+            </div>
+          {{/if}}
+
+          {{!-- URL Details --}}
+          {{#if (isEqual source 'url')}}
+            <div
+              class="text-[#ffffff] text-left absolute left-[60px] top-[25px]"
+              style="font: 400 18px 'Inter', sans-serif">
+              {{title}}
+            </div>
+            <div
+              class="text-[#ffffff] text-left absolute left-[60px] top-[3px]"
+              style="font: 400 14px 'Inter', sans-serif">
+              {{url}} 
+            </div>
+          {{/if}}
+
+          <!-- Twitter Avatar -->
+          {{#if (isEqual source 'twitter')}}
+            <img
+              class="rounded-[50%] w-[50px] h-[50px] absolute left-0 top-0"
+              src="{{avatar}}" />
+          {{/if}}
+          <svg
+            class="absolute left-0 top-[-20px] overflow-visible"
+            style="transform: translate(0px, 0px)"
+            width="390"
+            height="3"
+            viewBox="0 0 390 3"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M390 3L0 3L0 0L390 0V3Z"
+              fill="white" />
+          </svg>
+        </div>
+
+        <!-- Watermark -->
+        <div
+          class="text-[rgba(245,245,245,0.80)] text-left absolute right-[15px] bottom-[15px]"
+          style="font: 400 12px 'Inter', sans-serif">
+          Created with by @spanduck
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

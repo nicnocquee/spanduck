@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-import fs from "node:fs";
+import os from "node:os";
 import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
@@ -59,12 +59,9 @@ export class ImageTemplateEngine {
     const html = template({ ...this.data, source: this.source });
 
     // Prepare the directory
-    if (!fs.existsSync(path.resolve("tmp"))) {
-      await fsPromises.mkdir(path.resolve("tmp"));
-    }
 
     // Generate the image based on the HTML
-    const outputPath = `tmp/${fileName}`;
+    const outputPath = `${os.tmpdir}/${fileName}`;
     const output = path.resolve(outputPath);
     await nodeHtmlToImage({
       output,

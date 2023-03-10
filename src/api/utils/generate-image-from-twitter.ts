@@ -58,7 +58,7 @@ export default async function generateImageFromTwitter({
   // Generate image
   let outputPath: string = "";
   let imageURL: string = "";
-  const fileName = `${user_id}_${project_id}_${nanoID}.png`;
+  const fileName = `${nanoID}_${project_id}_${user_id}.png`;
   if (!fs.existsSync(path.resolve(`templates/${template_id}.html`))) {
     throw new Error("Template not found!");
   }

@@ -36,8 +36,6 @@ export default async function generateImageFromURL({
   // Get the metadata
   const result = await parser(url);
 
-  console.log(result);
-
   // If exists, return from Database
   // Else, fetch from the URL
   const image_metadata: WebImageMetadataSchemaType = {
@@ -58,7 +56,7 @@ export default async function generateImageFromURL({
   // Generate image
   let outputPath: string = "";
   let imageURL: string = "";
-  const fileName = `${user_id}_${project_id}_${nanoID}.png`;
+  const fileName = `${nanoID}_${project_id}_${user_id}.png`;
   const ITE = new ImageTemplateEngine({
     url,
     unique_id: nanoID,

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 500px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#ffffff] w-[500px] h-[500px] relative overflow-hidden">
+      <img
+        class="w-[500px] h-[500px] absolute left-0 top-0"
+        src="../public/images/bg-1x500.png" />
+
+      <div
+        class="bg-[rgba(217,217,217,0.70)] w-[450px] h-[400px] absolute left-[25px] top-[50px]"></div>
+
+      <img
+        class="w-[70px] h-[70px] absolute left-[405px] top-[23px]"
+        src="../public/images/clip.png" />
+
+      <div class="w-[450px] h-[450px] absolute left-[25px] top-[25px]">
+        <div class="w-[400px] h-[46px] absolute left-[25px] top-[33px]">
+          <div class="w-[225px] h-[50px] static">
+          {{!-- Twitter User Details --}}
+          {{#if (isEqual source 'twitter')}}
+            <div
+              class="text-[#790f14] text-left absolute left-[60px] top-[25px]"
+              style="font: 600 18px 'Inter', sans-serif">
+              @{{username}}
+            </div>
+            <div
+              class="text-[#0a0908] text-left absolute left-[60px] top-[3px]"
+              style="font: 400 14px 'IBM Plex Sans Condensed', sans-serif">
+              {{display_name}} 
+            </div>
+          {{/if}}
+
+          {{!-- URL Details --}}
+          {{#if (isEqual source 'url')}}
+            <div
+              class="text-[#790f14] text-left absolute left-[60px] top-[25px]"
+              style="font: 600 18px 'Inter', sans-serif">
+              {{title}}
+            </div>
+            <div
+              class="text-[#0a0908] text-left absolute left-[60px] top-[3px]"
+              style="font: 400 14px 'IBM Plex Sans Condensed', sans-serif">
+              {{url}} 
+            </div>
+          {{/if}}
+
+          <!-- Twitter Avatar -->
+          {{#if (isEqual source 'twitter')}}
+            <img
+              class="rounded-[50%] w-[50px] h-[50px] absolute left-0 top-0"
+              src="{{avatar}}" />
+          {{/if}}
+          </div>
+        </div>
+
+        <div
+          class="flex flex-row gap-0 items-start justify-start w-[390px] h-[300px] absolute left-[30px] top-[103px] overflow-hidden"
+          style="box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25)">
+          {{!-- Content --}}
+          <div
+            class="text-[#0a0908] text-left relative w-[390px] h-[231px] flex items-center justify-start"
+            style="font: 400 27px 'Kelly Slab', sans-serif">
+            {{#if (isEqual source 'url')}}
+              <p class="whitespace-normal">{{description}}</p>
+            {{/if}}
+            {{#if (isEqual source 'twitter')}}
+              <p class="whitespace-pre-line">
+                {{content}} 
+              </p>
+            {{/if}}
+          </div>
+        </div>
+
+        <!-- Watermark -->
+        <div
+          class="text-[#0a0908] text-left absolute right-[11px] bottom-0"
+          style="font: 400 12px 'Inter', sans-serif">
+          Created with by @spanduck
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

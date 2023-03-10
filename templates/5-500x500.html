@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 500px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-[#406e8e] w-[500px] h-[500px] relative overflow-hidden">
+      <img
+        class="w-[311px] h-[324px] absolute left-[155px] top-[25px]"
+        src="../public/images/group-9-1.png" />
+
+      <div
+        class="flex flex-row gap-0 items-start justify-start w-[458px] h-[133px] absolute left-[19px] top-[349px] overflow-hidden">
+        {{!-- Content --}}
+        <div
+          class="text-[#f4f5e2] text-left relative w-[458px] h-[133px] flex items-center justify-start"
+          style="font: 500 20px 'Inter', sans-serif">
+          {{#if (isEqual source 'url')}}
+            <p class="whitespace-normal">{{description}}</p>
+          {{/if}}
+          {{#if (isEqual source 'twitter')}}
+            <p class="whitespace-pre-line">
+              {{content}} 
+            </p>
+          {{/if}}
+        </div>
+      </div>
+
+      <!-- Background -->
+      {{#if (isEqual source 'twitter')}} 
+        {{#if images.length}}
+        <img
+          class="w-[206px] h-[203px] absolute left-[203px] top-[98px]"
+          src="{{images.[0]}}" />
+        {{/if}} 
+      {{/if}} 
+
+      {{#if (isEqual source 'url')}} 
+          {{#if image.src}}
+            <img
+            class="w-[206px] h-[203px] absolute left-[203px] top-[98px]"
+            src="{{images.src}}" />
+          {{else}}
+            <img
+            class="w-[206px] h-[203px] absolute left-[203px] top-[98px]"
+            src="{{image}}" />
+          {{/if}}
+        {{/if}}
+    </div>
+  </body>
+</html>

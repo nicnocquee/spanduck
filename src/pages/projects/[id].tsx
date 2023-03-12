@@ -1,18 +1,19 @@
+import { GetServerSidePropsContext } from "next";
+import Image from "next/image";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import DashboardLayout from "@/components/DashboardLayout";
-import { protectPage } from "@/utils/routes";
-import { useAuth } from "@/contexts/AuthContext";
-import fetcher from "@/config/axios";
-import Image from "next/image";
-import { GetServerSidePropsContext } from "next";
-import { getProjectByID } from "@/api/usecases/database/project";
-import { ProjectSchemaType } from "@/api/schemas/project";
-import buildQueryParams from "@/utils/build-query-params";
+
 import { GeneratedImageSchemaType } from "@/api/schemas/generated-image";
-import { ArrowPathIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import DeleteGeneratedImageModal from "@/components/generated-image/DeleteGeneratedImageModal";
+import { ProjectSchemaType } from "@/api/schemas/project";
+import { getProjectByID } from "@/api/usecases/database/project";
+import DashboardLayout from "@/components/DashboardLayout";
 import AddGeneratedImageModal from "@/components/generated-image/AddGeneratedImageModal";
+import DeleteGeneratedImageModal from "@/components/generated-image/DeleteGeneratedImageModal";
+import fetcher from "@/config/axios";
+import { useAuth } from "@/contexts/AuthContext";
+import buildQueryParams from "@/utils/build-query-params";
+import { protectPage } from "@/utils/routes";
+import { ArrowPathIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 type ProjectViewProps = {
   project: ProjectSchemaType;
@@ -42,11 +43,10 @@ function ProjectView({ project }: ProjectViewProps) {
     async () => {
       const queryParams = buildQueryParams(query);
       const { data } = await fetcher().get(`/generated-images?${queryParams}`);
+
       return data.data;
     },
-    {
-      enabled: !!user.data?.id,
-    }
+    { enabled: !!user.data?.id }
   );
 
   const [selectedGeneratedImage, setSelectedGeneratedImage] =
@@ -65,7 +65,7 @@ function ProjectView({ project }: ProjectViewProps) {
       <DeleteGeneratedImageModal
         open={deleteModalOpen}
         setOpen={setDeleteModalOpen}
-        generatedImageToDelete={selectedGeneratedImage}
+        imageToDelete={selectedGeneratedImage}
         onDelete={() => refetch()}
       />
       <DashboardLayout title={project.name}>

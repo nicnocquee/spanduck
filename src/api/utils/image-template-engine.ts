@@ -40,7 +40,7 @@ export class ImageTemplateEngine {
   ) {
     if (process.env.NODE_ENV === "production") {
       // Running on the Vercel platform.
-      this.puppeteer = require("puppeteer-core");
+      this.puppeteer = this.chrome.puppeteer;
     } else {
       // Running locally.
       this.puppeteer = require("puppeteer");

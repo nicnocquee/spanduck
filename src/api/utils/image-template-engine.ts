@@ -58,10 +58,8 @@ export class ImageTemplateEngine {
     const template = Handlebars.compile(file);
     const html = template({ ...this.data, source: this.source });
 
-    // Prepare the directory
-
     // Generate the image based on the HTML
-    const outputPath = `${os.tmpdir}/${fileName}`;
+    const outputPath = `/tmp/${fileName}`;
     const output = path.resolve(outputPath);
     await nodeHtmlToImage({
       output,

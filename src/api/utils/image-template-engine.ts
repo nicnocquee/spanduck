@@ -1,5 +1,4 @@
 import Handlebars from "handlebars";
-import os from "node:os";
 import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
@@ -9,6 +8,17 @@ import {
   TwitterImageMetadataSchemaType,
   WebImageMetadataSchemaType,
 } from "../schemas/generated-image";
+import {
+  puppeteer,
+  args,
+  defaultViewport,
+  executablePath,
+} from "chrome-aws-lambda";
+import {
+  createImageStorage,
+  getImageStorage,
+  uploadToImageStorage,
+} from "../usecases/storage/images";
 
 Handlebars.registerHelper("isEqual", function (value1, value2) {
   return value1 === value2;
@@ -58,16 +68,31 @@ export class ImageTemplateEngine {
     const template = Handlebars.compile(file);
     const html = template({ ...this.data, source: this.source });
 
-    // Prepare the directory
-
     // Generate the image based on the HTML
-    const outputPath = `${os.tmpdir}/${fileName}`;
-    const output = path.resolve(outputPath);
-    await nodeHtmlToImage({
-      output,
+    const image = await nodeHtmlToImage({
       html,
+      puppeteer: puppeteer,
+      puppeteerArgs: {
+        args: [...args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: defaultViewport,
+        executablePath: await executablePath,
+        headless: true,
+        ignoreHTTPSErrors: true,
+      },
     });
 
-    return outputPath;
+    // Check if bucket existed
+    const isBucketExists = await getImageStorage();
+    if (!isBucketExists) {
+      await createImageStorage();
+    }
+
+    // Read file as buffer and upload the file to bucket
+    const { error } = await uploadToImageStorage(fileName, image as Buffer, {
+      upsert: true,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 }

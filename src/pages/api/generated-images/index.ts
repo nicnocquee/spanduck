@@ -157,6 +157,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       },
     });
   } catch (e: any) {
+    console.error(e);
     return handleResponse(res, {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       body: {

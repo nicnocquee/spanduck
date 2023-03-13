@@ -8,15 +8,18 @@ import {
   TwitterImageMetadataSchemaType,
   WebImageMetadataSchemaType,
 } from "../schemas/generated-image";
+import {
+  puppeteer,
+  args,
+  defaultViewport,
+  executablePath,
+} from "chrome-aws-lambda";
 
 Handlebars.registerHelper("isEqual", function (value1, value2) {
   return value1 === value2;
 });
 
 export class ImageTemplateEngine {
-  private chrome = require("chrome-aws-lambda");
-  private puppeteer;
-
   private data:
     | ITwitterData
     | IImageData
@@ -38,14 +41,6 @@ export class ImageTemplateEngine {
       | WebImageMetadataSchemaType
       | TwitterImageMetadataSchemaType
   ) {
-    if (process.env.NODE_ENV === "production") {
-      // Running on the Vercel platform.
-      this.puppeteer = this.chrome.puppeteer;
-    } else {
-      // Running locally.
-      this.puppeteer = require("puppeteer");
-    }
-
     this.data = data;
 
     if (this.isTwitterData(data)) {
@@ -74,15 +69,11 @@ export class ImageTemplateEngine {
     await nodeHtmlToImage({
       output,
       html,
-      puppeteer: this.puppeteer,
+      puppeteer: puppeteer,
       puppeteerArgs: {
-        args: [
-          ...this.chrome.args,
-          "--hide-scrollbars",
-          "--disable-web-security",
-        ],
-        defaultViewport: this.chrome.defaultViewport,
-        executablePath: await this.chrome.executablePath,
+        args: [...args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: defaultViewport,
+        executablePath: await executablePath,
         headless: true,
         ignoreHTTPSErrors: true,
       },

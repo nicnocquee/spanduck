@@ -1,5 +1,4 @@
 import Handlebars from "handlebars";
-import os from "node:os";
 import * as fsPromises from "node:fs/promises";
 import path from "path";
 import nodeHtmlToImage from "node-html-to-image";
@@ -15,6 +14,9 @@ Handlebars.registerHelper("isEqual", function (value1, value2) {
 });
 
 export class ImageTemplateEngine {
+  private chrome = require("chrome-aws-lambda");
+  private puppeteer;
+
   private data:
     | ITwitterData
     | IImageData
@@ -36,6 +38,14 @@ export class ImageTemplateEngine {
       | WebImageMetadataSchemaType
       | TwitterImageMetadataSchemaType
   ) {
+    if (process.env.NODE_ENV === "production") {
+      // Running on the Vercel platform.
+      this.puppeteer = require("puppeteer-core");
+    } else {
+      // Running locally.
+      this.puppeteer = require("puppeteer");
+    }
+
     this.data = data;
 
     if (this.isTwitterData(data)) {
@@ -64,6 +74,18 @@ export class ImageTemplateEngine {
     await nodeHtmlToImage({
       output,
       html,
+      puppeteer: this.puppeteer,
+      puppeteerArgs: {
+        args: [
+          ...this.chrome.args,
+          "--hide-scrollbars",
+          "--disable-web-security",
+        ],
+        defaultViewport: this.chrome.defaultViewport,
+        executablePath: await this.chrome.executablePath,
+        headless: true,
+        ignoreHTTPSErrors: true,
+      },
     });
 
     return outputPath;

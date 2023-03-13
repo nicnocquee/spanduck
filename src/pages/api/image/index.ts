@@ -154,6 +154,9 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
       throw new Error(error.message);
     }
 
+    // Remove the local file
+    await fsPromises.rm(outputPath);
+
     // Get download URL for image
     imageURL = await getImageObjectURL(fileName);
 

@@ -14,6 +14,11 @@ import {
   defaultViewport,
   executablePath,
 } from "chrome-aws-lambda";
+import {
+  createImageStorage,
+  getImageStorage,
+  uploadToImageStorage,
+} from "../usecases/storage/images";
 
 Handlebars.registerHelper("isEqual", function (value1, value2) {
   return value1 === value2;
@@ -64,10 +69,7 @@ export class ImageTemplateEngine {
     const html = template({ ...this.data, source: this.source });
 
     // Generate the image based on the HTML
-    const outputPath = `/tmp/${fileName}`;
-    const output = path.resolve(outputPath);
-    await nodeHtmlToImage({
-      output,
+    const image = await nodeHtmlToImage({
       html,
       puppeteer: puppeteer,
       puppeteerArgs: {
@@ -79,6 +81,18 @@ export class ImageTemplateEngine {
       },
     });
 
-    return outputPath;
+    // Check if bucket existed
+    const isBucketExists = await getImageStorage();
+    if (!isBucketExists) {
+      await createImageStorage();
+    }
+
+    // Read file as buffer and upload the file to bucket
+    const { error } = await uploadToImageStorage(fileName, image as Buffer, {
+      upsert: true,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 }

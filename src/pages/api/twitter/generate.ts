@@ -1,17 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { StatusCodes } from "http-status-codes";
-import * as fsPromises from "fs/promises";
 import fs from "node:fs";
 import path from "node:path";
 import z from "zod";
 import handleResponse from "@/api/utils/handle-response";
 import { ImageTemplateEngine } from "@/api/utils/image-template-engine";
-import {
-  createTwitterStorage,
-  getTwitterObjectURL,
-  getTwitterStorage,
-  uploadToTwitterStorage,
-} from "@/api/usecases/storage/twitter";
+import { getTwitterObjectURL } from "@/api/usecases/storage/twitter";
 import {
   createTwitterData,
   getTwitterDataByTweetID,
@@ -132,22 +126,7 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
 
     // Render the image
     const ITE = new ImageTemplateEngine(metadata);
-    const outputPath = await ITE.generate(templateID, fileName);
-
-    // Check if bucket existed
-    const isBucketExists = await getTwitterStorage();
-    if (!isBucketExists) {
-      await createTwitterStorage();
-    }
-
-    // Read file as buffer and upload the file to bucket
-    const file = await fsPromises.readFile(outputPath);
-    const { error } = await uploadToTwitterStorage(fileName, file, {
-      upsert: true,
-    });
-    if (error) {
-      throw new Error(error.message);
-    }
+    await ITE.generate(templateID, fileName);
 
     // Get download URL for image
     url = await getTwitterObjectURL(fileName);

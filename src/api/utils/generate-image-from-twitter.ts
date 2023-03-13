@@ -1,15 +1,9 @@
 import fs from "fs";
-import fsPromises from "fs/promises";
 import path from "path";
 import { TwitterImageMetadataSchemaType } from "../schemas/generated-image";
 import { ImageTemplateEngine } from "./image-template-engine";
 import { nanoid } from "nanoid";
-import {
-  createImageStorage,
-  getImageObjectURL,
-  getImageStorage,
-  uploadToImageStorage,
-} from "../usecases/storage/images";
+import { getImageObjectURL } from "../usecases/storage/images";
 import { supabase } from "@/utils/supabase";
 
 interface TPayload {
@@ -56,7 +50,6 @@ export default async function generateImageFromTwitter({
   image_metadata = functionData;
 
   // Generate image
-  let outputPath: string = "";
   let imageURL: string = "";
   const fileName = `${nanoID}_${project_id}_${user_id}.png`;
   if (!fs.existsSync(path.resolve(`templates/${template_id}.html`))) {
@@ -70,22 +63,7 @@ export default async function generateImageFromTwitter({
     tweet_id,
     content: image_metadata.content.trimStart(),
   });
-  outputPath = await ITE.generate(template_id || 1, fileName);
-
-  // Check if bucket existed
-  const isBucketExists = await getImageStorage();
-  if (!isBucketExists) {
-    await createImageStorage();
-  }
-
-  // Read file as buffer and upload the file to bucket
-  const file = await fsPromises.readFile(outputPath);
-  const { error } = await uploadToImageStorage(fileName, file, {
-    upsert: true,
-  });
-  if (error) {
-    throw new Error(error.message);
-  }
+  await ITE.generate(template_id || 1, fileName);
 
   // Get download URL for image
   imageURL = await getImageObjectURL(fileName);

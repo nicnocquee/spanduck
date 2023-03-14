@@ -23,7 +23,7 @@
 
       <div class="w-[820px] h-[630px] absolute left-[130px] top-[116px]">
         <div
-          class="text-[#0a0908] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px]"
+          class="text-[#0a0908] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
           style="font: 700 58px 'Inter', sans-serif">
           {{#if (isEqual source 'url')}}
             <p class="whitespace-normal">{{description}}</p>
@@ -37,37 +37,38 @@
       <div class="absolute right-0 left-36 bottom-[84px] top-[761px]">
         {{!-- Twitter User Details --}} 
         {{#if (isEqual source 'twitter')}}
-          <div
-            class="text-[#0a0908] text-left absolute left-[334px] top-[122px]"
+          <p
+            class="text-[#0a0908] text-right absolute left-[334px] top-[122px]"
             style="font: 400 36px 'Inter', sans-serif">
             {{display_name}}
-          </div>
-          <div
-            class="text-[#0a0908] text-left absolute left-[617px] top-[189px]"
+          </p>
+          <p
+            class="text-[#0a0908] text-right absolute left-[617px] top-[189px]"
             style="font: 400 24px 'Inter', sans-serif">
             @{{username}}
-          </div>
+          </p>
         {{/if}} 
 
         <!-- Twitter Avatar -->
         {{#if (isEqual source 'twitter')}}
           <img
-            class="rounded-[50%] w-[120px] h-[120px] absolute left-[703px] top-0"
+            class="rounded-[50%] object-center w-[120px] h-[120px] absolute left-[703px] top-0"
             src="{{avatar}}" />
         {{/if}} 
+      </div>
         
+      <div class="absolute right-0 left-36 bottom-[84px] top-[761px] max-w-full">
         {{!-- URL Details --}} 
         {{#if (isEqual source 'url')}}
-          <div
-            class="text-[#0a0908] text-left absolute left-[334px] top-[122px]"
+          <p
+            class="text-[#0a0908] text-left"
             style="font: 400 36px 'Inter', sans-serif">
             {{title}}
-          </div>
-          <div
-            class="text-[#0a0908] text-left absolute left-[617px] top-[189px]"
-            style="font: 400 18px 'Inter', sans-serif">
+          </p>
+          <p
+            class="text-[#0a0908] text-left">
             {{url}}
-          </div>
+          </p>
         {{/if}}
       </div>
     </div>

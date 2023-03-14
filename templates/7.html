@@ -18,7 +18,7 @@
       {{#if (isEqual source 'twitter')}} 
         {{#if images.length}}
           <img
-            class="w-[378px] h-[1080px] absolute left-0 top-0"
+            class="w-[378px] h-[1080px] absolute left-0 top-0 object-cover object-center opacity-50"
             src="{{images.[0]}}" />
         {{/if}} 
       {{/if}} 
@@ -26,10 +26,10 @@
       {{#if (isEqual source 'url')}} 
         {{#if image.src}}
           <img
-            class="w-[378px] h-[1080px] absolute left-0 top-0"
+            class="w-[378px] h-[1080px] absolute left-0 top-0 object-cover object-center opacity-50"
             src="{{images.src}}" />
         {{else}}
-          <img class="w-[378px] h-[1080px] absolute left-0 top-0" src="{{image}}" />
+          <img class="w-[378px] h-[1080px] absolute left-0 top-0 object-cover object-center opacity-50" src="{{image}}" />
         {{/if}} 
       {{/if}}
 
@@ -44,39 +44,42 @@
         class="absolute right-[130px] left-[130px] bottom-[131px] top-[793px]">
         {{!-- Twitter User Details --}} 
         {{#if (isEqual source 'twitter')}}
-          <div
+          <p
             class="text-[#ffffff] text-right absolute left-[185px] top-[42px]"
             style="font: 400 36px 'Inter', sans-serif">
             {{display_name}}
-          </div>
-          <div
+          </p>
+          <p
             class="text-[#ffffff] text-right absolute left-[468px] top-[117px]"
             style="font: 400 24px 'Inter', sans-serif">
             @{{username}}
-          </div>
+          </p>
         {{/if}} 
-        
-        {{!-- URL Details --}} 
-        {{#if (isEqual source 'url')}}
-          <div
-            class="text-[#ffffff] text-right absolute left-[185px] top-[42px]"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{title}}
-          </div>
-          <div
-            class="text-[#ffffff] text-right absolute left-[468px] top-[117px]"
-            style="font: 400 24px 'Inter', sans-serif">
-            {{url}}
-          </div>
-        {{/if}}
 
         <!-- Twitter Avatar -->
         {{#if (isEqual source 'twitter')}}
           <img
-            class="rounded-[50%] w-[120px] h-[120px] absolute left-[700px] top-[26px]"
+            class="rounded-[50%] object-center w-[120px] h-[120px] absolute left-[700px] top-[26px]"
             src="{{avatar}}" />
         {{/if}}
       </div>
+        
+        <div
+          class="absolute max-w-full right-[130px] left-[130px] bottom-[131px] top-[793px]">
+        {{!-- URL Details --}} 
+        {{#if (isEqual source 'url')}}
+          <p
+            class="text-[#ffffff] text-right"
+            style="font: 400 36px 'Inter', sans-serif">
+            {{title}}
+          </p>
+          <p
+            class="text-[#ffffff] text-right">
+            {{url}}
+          </p>
+        {{/if}}
+        </div>
+
       <svg
         class="absolute left-[130px] top-[785px] overflow-visible"
         style="transform: translate(0px, 0px)"
@@ -95,7 +98,7 @@
       <div class="w-[820px] h-[630px] absolute left-[130px] top-[130px]">
         {{!-- Content --}}
         <div
-          class="text-[#ffffff] text-right absolute left-2.5 top-2.5 w-[810px] h-[620px]"
+          class="text-[#ffffff] text-right absolute left-2.5 top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
           style="font: 700 58px 'Inter', sans-serif">
           {{#if (isEqual source 'url')}}
             <p class="whitespace-normal">{{description}}</p>

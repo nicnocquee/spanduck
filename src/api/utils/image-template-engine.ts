@@ -8,17 +8,13 @@ import {
   TwitterImageMetadataSchemaType,
   WebImageMetadataSchemaType,
 } from "../schemas/generated-image";
-import {
-  puppeteer,
-  args,
-  defaultViewport,
-  executablePath,
-} from "chrome-aws-lambda";
+import { args, defaultViewport, executablePath } from "chrome-aws-lambda";
 import {
   createImageStorage,
   getImageStorage,
   uploadToImageStorage,
 } from "../usecases/storage/images";
+import puppeteerCore from "puppeteer-core";
 
 Handlebars.registerHelper("isEqual", function (value1, value2) {
   return value1 === value2;
@@ -71,7 +67,7 @@ export class ImageTemplateEngine {
     // Generate the image based on the HTML
     const image = await nodeHtmlToImage({
       html,
-      puppeteer: puppeteer,
+      puppeteer: puppeteerCore,
       puppeteerArgs: {
         args: [...args, "--hide-scrollbars", "--disable-web-security"],
         defaultViewport: defaultViewport,

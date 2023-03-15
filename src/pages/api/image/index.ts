@@ -125,15 +125,22 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    // Render and upload the image
-    const ITE = new ImageTemplateEngine(metadata);
-    await ITE.generate(
-      parseInt(params.templateID as string, 10) || 1,
-      fileName
-    );
+    const puppeteerURL = new URL(req.url || "");
+    puppeteerURL.pathname = `/api/puppeteer`;
+
+    const puppeteerBody = {
+      metadata,
+      fileName,
+      templateID: params.templateID as string,
+    };
+    const data = await fetch(puppeteerURL, {
+      method: "post",
+      body: JSON.stringify(puppeteerBody),
+      headers: { "Content-Type": "application/json" },
+    }).then((pupRes) => pupRes.json());
 
     // Get download URL for image
-    imageURL = await getImageObjectURL(fileName);
+    imageURL = data.data;
 
     return handleResponse(res, {
       status: StatusCodes.OK,

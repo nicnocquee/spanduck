@@ -1,5 +1,5 @@
 import { ITwitterDataBody } from "@/api/interfaces/twitter";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 export async function getTwitterData() {
   return await supabase.from("twitter").select("*");

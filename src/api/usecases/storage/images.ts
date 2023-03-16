@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 import { FileOptions } from "@supabase/storage-js";
 
 type TFile =

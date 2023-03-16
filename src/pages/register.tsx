@@ -1,15 +1,17 @@
 import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { useState } from "react";
+import { AuthError } from "@supabase/supabase-js";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 import { ErrorAlert, SuccessAlert } from "@/components/Alert";
 import PageMeta from "@/components/PageMeta";
 import { SIGN_UP_SUCCESS } from "@/constants/strings";
-import { authPage } from "@/utils/routes";
-import { supabase } from "@/utils/supabase";
-import { AuthError } from "@supabase/supabase-js";
+import { GetServerSidePropsContext } from "next";
+import { hasUserSession } from "@/utils/routes";
 
 function RegisterPage() {
+  const supabaseClient = useSupabaseClient();
   const [authSuccess, setAuthSuccess] = useState<string | null>(null);
   const [authError, setAuthError] = useState<AuthError | null>(null);
 
@@ -21,7 +23,7 @@ function RegisterPage() {
     },
     { resetForm }: { resetForm: () => void }
   ) => {
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
       email: values.email,
       password: values.password,
       options: {
@@ -148,4 +150,21 @@ function RegisterPage() {
   );
 }
 
-export default authPage(RegisterPage);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+export default RegisterPage;

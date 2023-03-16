@@ -2,15 +2,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-hot-toast";
+import { GetServerSidePropsContext } from "next";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import AddToProjectModal from "@/components/AddToProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
 import { templates as templatesData } from "@/samples/templates";
-import { protectPage } from "@/utils/routes";
 import buildQueryParams from "@/utils/build-query-params";
 import fetcher from "@/config/axios";
-import { useAuth } from "@/contexts/AuthContext";
-import { ProjectSchemaType } from "@/api/schemas/project";
+import { hasUserSession } from "@/utils/routes";
 
 export type Template = {
   id: number;
@@ -20,13 +20,13 @@ export type Template = {
 };
 
 function TemplatesPage() {
-  const user = useAuth();
+  const user = useUser();
   const query = {
     order: {
       updated_at: "desc",
     },
     filter: {
-      user_id: user.data?.id,
+      user_id: user?.id,
     },
     from: 0,
     to: 10,
@@ -42,7 +42,7 @@ function TemplatesPage() {
     },
     {
       initialData: [],
-      enabled: !!user.data?.id,
+      enabled: !!user?.id,
     }
   );
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -116,4 +116,21 @@ function TemplatesPage() {
   );
 }
 
-export default protectPage(TemplatesPage);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (!isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+export default TemplatesPage;

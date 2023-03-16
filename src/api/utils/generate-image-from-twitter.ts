@@ -4,7 +4,7 @@ import { TwitterImageMetadataSchemaType } from "../schemas/generated-image";
 import { ImageTemplateEngine } from "./image-template-engine";
 import { nanoid } from "nanoid";
 import { getImageObjectURL } from "../usecases/storage/images";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 interface TPayload {
   url: string;

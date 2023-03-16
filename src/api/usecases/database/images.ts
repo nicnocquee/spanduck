@@ -1,5 +1,5 @@
 import { IImageData } from "@/api/interfaces/image";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 export async function getImageData() {
   return await supabase.from("images").select("*");

@@ -1,23 +1,31 @@
 import { Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { useState } from "react";
+import { AuthError } from "@supabase/supabase-js";
+import { GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 import { ErrorAlert } from "@/components/Alert";
 import PageMeta from "@/components/PageMeta";
-import { authPage } from "@/utils/routes";
-import { supabase } from "@/utils/supabase";
-import { AuthError } from "@supabase/supabase-js";
+import { hasUserSession } from "@/utils/routes";
 
 function LoginPage() {
+  const router = useRouter();
+  const supabaseClient = useSupabaseClient();
   const [authError, setAuthError] = useState<AuthError | null>(null);
 
   const handleSubmit = async (values: { email: string; password: string }) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
 
-    setAuthError(error);
+    if (error) {
+      setAuthError(error);
+    }
+
+    router.push("/");
   };
 
   return (
@@ -111,4 +119,21 @@ function LoginPage() {
   );
 }
 
-export default authPage(LoginPage);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+export default LoginPage;

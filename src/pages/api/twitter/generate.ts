@@ -12,7 +12,7 @@ import {
   updateTwitterDataByTweetID,
 } from "@/api/usecases/database/twitter";
 import { ITwitterData } from "@/api/interfaces/twitter";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,12 +1,12 @@
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { Dialog, Transition } from "@headlessui/react";
+import { toast } from "react-hot-toast";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ErrorAlert } from "../Alert";
 import fetcher from "@/config/axios";
-import { toast } from "react-hot-toast";
-import { useAuth } from "@/contexts/AuthContext";
 
 type AddGeneratedImageModalProps = {
   open: boolean;
@@ -29,7 +29,7 @@ export default function AddGeneratedImageModal({
   projectID,
   templateID,
 }: AddGeneratedImageModalProps) {
-  const user = useAuth();
+  const user = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export default function AddGeneratedImageModal({
     try {
       await fetcher().post(`/generated-images`, {
         ...values,
-        user_id: user.data?.id,
+        user_id: user?.id,
         project_id: projectID,
       });
 

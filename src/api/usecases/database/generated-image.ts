@@ -7,9 +7,15 @@ import getWithQuery from "@/api/utils/get-with-query";
 import { supabase } from "@/api/utils/supabase";
 
 export async function getGeneratedImages(query?: IQuery) {
-  let base = supabase.from("generated_images").select("*", {
-    count: "exact",
-  });
+  let base = supabase.from("generated_images").select(
+    `
+    *, 
+    project:projects (*)
+  `,
+    {
+      count: "exact",
+    }
+  );
   const response = await getWithQuery(base, query);
 
   return response;

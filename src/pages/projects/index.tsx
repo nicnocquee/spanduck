@@ -12,8 +12,14 @@ import { ProjectSchemaType } from "@/api/schemas/project";
 import buildQueryParams from "@/utils/build-query-params";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { hasUserSession } from "@/utils/routes";
+import serverSupabaseClient from "@/api/utils/server-supabase-client";
+import { getProjects } from "@/api/usecases/database/project";
 
-function ProjectsPage() {
+type ProjectsPageProps = {
+  projects: ProjectSchemaType[];
+};
+
+function ProjectsPage({ projects }: ProjectsPageProps) {
   const user = useUser();
   const query = {
     order: {
@@ -22,9 +28,6 @@ function ProjectsPage() {
     filter: {
       user_id: user?.id,
     },
-    from: 0,
-    to: 10,
-    limit: 10,
   };
 
   const { data, isLoading, refetch } = useQuery(
@@ -35,7 +38,7 @@ function ProjectsPage() {
       return data.data;
     },
     {
-      initialData: [],
+      initialData: projects,
       enabled: !!user?.id,
     }
   );
@@ -84,7 +87,7 @@ function ProjectsPage() {
           </button>
         </div>
       </div>
-      <div className="mt-8 flow-root">
+      <div className="mt-8 flow-root px-4 lg:px-0">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="overflow-hidden ring-1 ring-black ring-opacity-10 sm:rounded-lg">
@@ -175,8 +178,37 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
+  // Get current user
+  const {
+    data: { user },
+  } = await serverSupabaseClient(ctx).auth.getUser();
+  const userID = user?.id.toString();
+
+  // Get initial data
+  const { data: projects } = await getProjects({
+    filter: `user_id:${userID}`,
+    order: "updated_at:desc",
+  });
+
+  // Set the props
+  if (projects) {
+    if (projects.length < 1) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        projects,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: {
+      projects: [],
+    },
   };
 }
 

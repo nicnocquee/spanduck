@@ -11,6 +11,9 @@ import { templates as templatesData } from "@/samples/templates";
 import buildQueryParams from "@/utils/build-query-params";
 import fetcher from "@/config/axios";
 import { hasUserSession } from "@/utils/routes";
+import serverSupabaseClient from "@/api/utils/server-supabase-client";
+import { getProjects } from "@/api/usecases/database/project";
+import { ProjectSchemaType } from "@/api/schemas/project";
 
 export type Template = {
   id: number;
@@ -19,7 +22,11 @@ export type Template = {
   author: string;
 };
 
-function TemplatesPage() {
+type TemplatesPageProps = {
+  projects: ProjectSchemaType[];
+};
+
+function TemplatesPage({ projects }: TemplatesPageProps) {
   const user = useUser();
   const query = {
     order: {
@@ -41,7 +48,7 @@ function TemplatesPage() {
       return data.data;
     },
     {
-      initialData: [],
+      initialData: projects,
       enabled: !!user?.id,
     }
   );
@@ -78,7 +85,7 @@ function TemplatesPage() {
           </p>
         </div>
       </div>
-      <div className="mt-8 flow-root">
+      <div className="mt-8 flow-root px-4 lg:px-0">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <ul
@@ -128,8 +135,36 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
+  // Get current user
+  const {
+    data: { user },
+  } = await serverSupabaseClient(ctx).auth.getUser();
+  const userID = user?.id.toString();
+
+  // Get initial data
+  const { data: projects } = await getProjects({
+    filter: `user_id:${userID}`,
+  });
+
+  // Set the props
+  if (projects) {
+    if (projects.length < 1) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        projects,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: {
+      projects: [],
+    },
   };
 }
 

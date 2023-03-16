@@ -1,17 +1,11 @@
-import { config } from "@/api/config/env";
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import serverSupabaseClient from "@/api/utils/server-supabase-client";
 import { GetServerSidePropsContext } from "next";
 
 export const hasUserSession = async (ctx: GetServerSidePropsContext) => {
-  // Create authenticated Supabase Client
-  const supabase = createServerSupabaseClient(ctx, {
-    supabaseKey: config.supabasePublicAnonKey,
-    supabaseUrl: config.supabaseURL,
-  });
   // Check if we have a session
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await serverSupabaseClient(ctx).auth.getUser();
 
   if (!user) return false;
 

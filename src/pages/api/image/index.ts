@@ -1,5 +1,4 @@
 import fs from "fs";
-import fsPromises from "fs/promises";
 import path from "node:path";
 import { NextApiRequest, NextApiResponse } from "next";
 import { StatusCodes } from "http-status-codes";
@@ -13,12 +12,7 @@ import {
   updateImageDataByID,
 } from "@/api/usecases/database/images";
 import { IImageData } from "@/api/interfaces/image";
-import {
-  createImageStorage,
-  getImageObjectURL,
-  getImageStorage,
-  uploadToImageStorage,
-} from "@/api/usecases/storage/images";
+import { getImageObjectURL } from "@/api/usecases/storage/images";
 import { ImageTemplateEngine } from "@/api/utils/image-template-engine";
 import { nanoid } from "nanoid";
 
@@ -116,7 +110,6 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
 
     // Generate image
     let imageURL: string;
-    let outputPath: string = "";
     const fileName = `${found?.[0]?.unique_id || nanoID}_${
       params.templateID
     }.png`;
@@ -132,42 +125,30 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    // Render the image
-    const ITE = new ImageTemplateEngine(metadata);
-    outputPath = await ITE.generate(
-      parseInt(params.templateID as string, 10) || 1,
-      fileName
-    );
+    const puppeteerURL = new URL(req.url || "");
+    puppeteerURL.pathname = `/api/puppeteer`;
 
-    // Check if bucket existed
-    const isBucketExists = await getImageStorage();
-    if (!isBucketExists) {
-      await createImageStorage();
-    }
-
-    // Read file as buffer and upload the file to bucket
-    const file = await fsPromises.readFile(outputPath);
-    const { error } = await uploadToImageStorage(fileName, file, {
-      upsert: true,
-    });
-    if (error) {
-      throw new Error(error.message);
-    }
+    const puppeteerBody = {
+      metadata,
+      fileName,
+      templateID: params.templateID as string,
+    };
+    const data = await fetch(puppeteerURL, {
+      method: "post",
+      body: JSON.stringify(puppeteerBody),
+      headers: { "Content-Type": "application/json" },
+    }).then((pupRes) => pupRes.json());
 
     // Get download URL for image
-    imageURL = await getImageObjectURL(fileName);
+    imageURL = data.data;
 
-    if (parseInt(params.dl as string, 10) === 1) {
-      return handleFileResponse(res, fs.readFileSync(outputPath));
-    } else {
-      return handleResponse(res, {
-        status: StatusCodes.OK,
-        body: {
-          message: "Successfully created an image",
-          data: imageURL,
-        },
-      });
-    }
+    return handleResponse(res, {
+      status: StatusCodes.OK,
+      body: {
+        message: "Successfully created an image",
+        data: imageURL,
+      },
+    });
   } catch (e: any) {
     return handleResponse(res, {
       status: StatusCodes.INTERNAL_SERVER_ERROR,

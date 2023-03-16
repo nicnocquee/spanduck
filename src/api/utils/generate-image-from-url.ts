@@ -1,16 +1,10 @@
 import fs from "fs";
-import fsPromises from "fs/promises";
 import path from "path";
 import parser from "html-metadata-parser";
 import { WebImageMetadataSchemaType } from "../schemas/generated-image";
 import { ImageTemplateEngine } from "./image-template-engine";
 import { nanoid } from "nanoid";
-import {
-  createImageStorage,
-  getImageObjectURL,
-  getImageStorage,
-  uploadToImageStorage,
-} from "../usecases/storage/images";
+import { getImageObjectURL } from "../usecases/storage/images";
 
 interface TPayload {
   url: string;
@@ -54,7 +48,6 @@ export default async function generateImageFromURL({
   }
 
   // Generate image
-  let outputPath: string = "";
   let imageURL: string = "";
   const fileName = `${nanoID}_${project_id}_${user_id}.png`;
   const ITE = new ImageTemplateEngine({
@@ -62,22 +55,7 @@ export default async function generateImageFromURL({
     unique_id: nanoID,
     ...image_metadata,
   });
-  outputPath = await ITE.generate(template_id || 1, fileName);
-
-  // Check if bucket existed
-  const isBucketExists = await getImageStorage();
-  if (!isBucketExists) {
-    await createImageStorage();
-  }
-
-  // Read file as buffer and upload the file to bucket
-  const file = await fsPromises.readFile(outputPath);
-  const { error } = await uploadToImageStorage(fileName, file, {
-    upsert: true,
-  });
-  if (error) {
-    throw new Error(error.message);
-  }
+  await ITE.generate(template_id || 1, fileName);
 
   // Get download URL for image
   imageURL = await getImageObjectURL(fileName);

@@ -1,5 +1,4 @@
 import { GetServerSidePropsContext } from "next";
-import Image from "next/image";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
@@ -14,13 +13,17 @@ import DeleteGeneratedImageModal from "@/components/generated-image/DeleteGenera
 import fetcher from "@/config/axios";
 import buildQueryParams from "@/utils/build-query-params";
 import { hasUserSession } from "@/utils/routes";
-import { ArrowPathIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import serverSupabaseClient from "@/api/utils/server-supabase-client";
+import { getGeneratedImages } from "@/api/usecases/database/generated-image";
+import GeneratedImageItem from "@/components/generated-image/GeneratedImageItem";
 
 type ProjectViewProps = {
   project: ProjectSchemaType;
+  generatedImages: GeneratedImageSchemaType[];
 };
 
-function ProjectView({ project }: ProjectViewProps) {
+function ProjectView({ project, generatedImages }: ProjectViewProps) {
   const user = useUser();
   const router = useRouter();
   const { query: queryParams } = router;
@@ -35,9 +38,6 @@ function ProjectView({ project }: ProjectViewProps) {
       project_id: project.id,
       user_id: user?.id,
     },
-    from: 0,
-    to: 10,
-    limit: 10,
   };
 
   const {
@@ -52,7 +52,7 @@ function ProjectView({ project }: ProjectViewProps) {
 
       return data.data;
     },
-    { initialData: [], enabled: !!user?.id }
+    { initialData: generatedImages, enabled: !!user?.id }
   );
 
   const [selectedGeneratedImage, setSelectedGeneratedImage] =
@@ -92,7 +92,7 @@ function ProjectView({ project }: ProjectViewProps) {
             </button>
           </div>
         </div>
-        <div className="mt-8 flow-root">
+        <div className="mt-8 flow-root px-4 lg:px-0">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <ul
@@ -109,39 +109,13 @@ function ProjectView({ project }: ProjectViewProps) {
                 ) : (
                   generated.map((item: GeneratedImageSchemaType) => (
                     <li key={item.image} className="relative">
-                      <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-black-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={1920}
-                          height={1280}
-                          className="pointer-events-none object-cover group-hover:opacity-30"
-                        />
-                        <div className="flex gap-4 flex-row items-center justify-center w-full">
-                          <a
-                            href={item.image}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="focus:outline-none hidden group-hover:block">
-                            <EyeIcon className="w-5 h-5 text-indigo-600 hover:text-indigo-900" />
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedGeneratedImage(item);
-                              setDeleteModalOpen(true);
-                            }}
-                            className="focus:outline-none hidden group-hover:block">
-                            <TrashIcon className="w-5 h-5 text-red-600 hover:text-red-900" />
-                          </button>
-                        </div>
-                      </div>
-                      <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">
-                        {item.name}
-                      </p>
-                      <p className="pointer-events-none block truncate text-sm font-medium text-gray-500">
-                        {item.url}
-                      </p>
+                      <GeneratedImageItem
+                        item={item}
+                        onDelete={(i) => {
+                          setSelectedGeneratedImage(i);
+                          setDeleteModalOpen(true);
+                        }}
+                      />
                     </li>
                   ))
                 )}
@@ -166,25 +140,43 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  const { id } = ctx.query;
-  const { data: response } = await getProjectByID(parseInt(id as string, 10));
-  if (response) {
-    if (response.length < 1) {
-      return {
-        notFound: true,
-      };
-    }
+  // Get current user
+  const {
+    data: { user },
+  } = await serverSupabaseClient(ctx).auth.getUser();
+  const userID = user?.id.toString();
 
-    const [project] = response;
+  // Get initial data
+  const { id } = ctx.query;
+  const projectID = parseInt(id as string, 10);
+  const [getProject, getGeneratedImage] = await Promise.allSettled([
+    await getProjectByID(projectID),
+    await getGeneratedImages({
+      filter: `user_id:${userID};project_id:${projectID}`,
+      order: `updated_at:desc`,
+    }),
+  ]);
+
+  let project: ProjectSchemaType;
+  let generatedImages: GeneratedImageSchemaType[] = [];
+  if (getProject.status === "fulfilled") {
+    [project] = getProject.value.data as ProjectSchemaType[];
+  } else {
     return {
-      props: {
-        project,
-      },
+      notFound: true,
     };
   }
 
+  if (getGeneratedImage.status === "fulfilled") {
+    generatedImages = getGeneratedImage.value
+      .data as GeneratedImageSchemaType[];
+  }
+
   return {
-    notFound: true,
+    props: {
+      project,
+      generatedImages,
+    },
   };
 }
 

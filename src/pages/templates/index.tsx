@@ -147,23 +147,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   });
 
   // Set the props
-  if (projects) {
-    if (projects.length < 1) {
-      return {
-        notFound: true,
-      };
-    }
-
-    return {
-      props: {
-        projects,
-      },
-    };
-  }
-
   return {
     props: {
-      projects: [],
+      projects,
     },
   };
 }

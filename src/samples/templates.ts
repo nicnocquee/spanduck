@@ -83,4 +83,40 @@ export const templates = [
     author: "Spanduck",
     image: "14.png",
   },
+  {
+    id: 15,
+    name: "Simple Template 15",
+    author: "Spanduck",
+    image: "15.png",
+  },
+  {
+    id: 16,
+    name: "Simple Template 16",
+    author: "Spanduck",
+    image: "16.png",
+  },
+  {
+    id: 17,
+    name: "Simple Template 17",
+    author: "Spanduck",
+    image: "17.png",
+  },
+  {
+    id: 18,
+    name: "Simple Template 18",
+    author: "Spanduck",
+    image: "18.png",
+  },
+  {
+    id: 19,
+    name: "Simple Template 19",
+    author: "Spanduck",
+    image: "19.png",
+  },
+  {
+    id: 20,
+    name: "Simple Template 20",
+    author: "Spanduck",
+    image: "20.png",
+  },
 ];

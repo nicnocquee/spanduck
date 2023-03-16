@@ -4,7 +4,7 @@ import {
   GeneratedImageSchemaType,
 } from "@/api/schemas/generated-image";
 import getWithQuery from "@/api/utils/get-with-query";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 export async function getGeneratedImages(query?: IQuery) {
   let base = supabase.from("generated_images").select("*", {

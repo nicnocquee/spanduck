@@ -2,6 +2,8 @@ import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { useRouter } from "next/router";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import { GeneratedImageSchemaType } from "@/api/schemas/generated-image";
 import { ProjectSchemaType } from "@/api/schemas/project";
@@ -10,18 +12,16 @@ import DashboardLayout from "@/components/DashboardLayout";
 import AddGeneratedImageModal from "@/components/generated-image/AddGeneratedImageModal";
 import DeleteGeneratedImageModal from "@/components/generated-image/DeleteGeneratedImageModal";
 import fetcher from "@/config/axios";
-import { useAuth } from "@/contexts/AuthContext";
 import buildQueryParams from "@/utils/build-query-params";
-import { protectPage } from "@/utils/routes";
+import { hasUserSession } from "@/utils/routes";
 import { ArrowPathIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/router";
 
 type ProjectViewProps = {
   project: ProjectSchemaType;
 };
 
 function ProjectView({ project }: ProjectViewProps) {
-  const user = useAuth();
+  const user = useUser();
   const router = useRouter();
   const { query: queryParams } = router;
   const { templateID } = queryParams;
@@ -33,7 +33,7 @@ function ProjectView({ project }: ProjectViewProps) {
     },
     filter: {
       project_id: project.id,
-      user_id: user.data?.id,
+      user_id: user?.id,
     },
     from: 0,
     to: 10,
@@ -52,7 +52,7 @@ function ProjectView({ project }: ProjectViewProps) {
 
       return data.data;
     },
-    { enabled: !!user.data?.id }
+    { initialData: [], enabled: !!user?.id }
   );
 
   const [selectedGeneratedImage, setSelectedGeneratedImage] =
@@ -154,9 +154,19 @@ function ProjectView({ project }: ProjectViewProps) {
   );
 }
 
-export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  const { id } = query;
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (!isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
+  const { id } = ctx.query;
   const { data: response } = await getProjectByID(parseInt(id as string, 10));
   if (response) {
     if (response.length < 1) {
@@ -178,4 +188,4 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   };
 }
 
-export default protectPage(ProjectView);
+export default ProjectView;

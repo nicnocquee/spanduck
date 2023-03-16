@@ -1,10 +1,7 @@
 import { IQuery } from "@/api/interfaces/query";
-import {
-  ProjectCreateEditSchemaType,
-  ProjectSchemaType,
-} from "@/api/schemas/project";
+import { ProjectCreateEditSchemaType } from "@/api/schemas/project";
 import getWithQuery from "@/api/utils/get-with-query";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/api/utils/supabase";
 
 export async function getProjects(query?: IQuery) {
   let base = supabase.from("projects").select("*", {

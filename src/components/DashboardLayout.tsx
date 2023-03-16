@@ -2,8 +2,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useState } from "react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
-import { useAuth } from "@/contexts/AuthContext";
 import { classNames } from "@/utils/classNames";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -13,7 +13,6 @@ import {
   CubeIcon,
   NewspaperIcon,
 } from "@heroicons/react/24/outline";
-import { supabase } from "@/utils/supabase";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -30,16 +29,17 @@ export default function DashboardLayout({
   title,
   children,
 }: DashboardLayoutProps) {
+  const supabaseClient = useSupabaseClient();
   const router = useRouter();
-  const { data } = useAuth();
+  const user = useUser();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const user = data?.user_metadata;
-  const avatarText = user?.name?.split(" ")?.[0]?.[0];
+  const avatarText = user?.user_metadata.name?.split(" ")?.[0]?.[0];
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
+    router.push("/login");
   };
 
   return (
@@ -126,7 +126,7 @@ export default function DashboardLayout({
                         </div>
                         <div className="ml-3">
                           <p className="text-base font-medium text-white">
-                            {user?.name}
+                            {user?.user_metadata?.name}
                           </p>
                           <button
                             onClick={() => handleLogout()}
@@ -181,7 +181,7 @@ export default function DashboardLayout({
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-white">
-                      {user?.name}
+                      {user?.user_metadata?.name}
                     </p>
                     <button
                       onClick={() => handleLogout()}

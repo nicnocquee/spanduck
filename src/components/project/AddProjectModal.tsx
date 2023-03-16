@@ -1,13 +1,13 @@
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { Dialog, Transition } from "@headlessui/react";
+import { toast } from "react-hot-toast";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ErrorAlert } from "../Alert";
+import { ErrorAlert } from "@/components/Alert";
 import { ProjectSchemaType } from "@/api/schemas/project";
 import fetcher from "@/config/axios";
-import { toast } from "react-hot-toast";
-import { useAuth } from "@/contexts/AuthContext";
 
 type AddProjectModalProps = {
   open: boolean;
@@ -27,7 +27,7 @@ export default function AddProjectModal({
   setOpen,
   onClose,
 }: AddProjectModalProps) {
-  const user = useAuth();
+  const user = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -44,7 +44,7 @@ export default function AddProjectModal({
     try {
       await fetcher().post(`/projects`, {
         ...values,
-        user_id: user.data?.id,
+        user_id: user?.id,
       });
 
       toast.success("Successfully created the project");
@@ -63,7 +63,7 @@ export default function AddProjectModal({
       await fetcher().put(`/projects/${projectToEdit?.id}`, {
         ...values,
         id: projectToEdit?.id,
-        user_id: user.data?.id,
+        user_id: user?.id,
       });
 
       toast.success("Successfully edited the project");

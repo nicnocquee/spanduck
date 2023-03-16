@@ -1,25 +1,26 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Link from "next/link";
+import { GetServerSidePropsContext } from "next";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import AddProjectModal from "@/components/project/AddProjectModal";
 import DeleteProjectModal from "@/components/project/DeleteProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
-import { protectPage } from "@/utils/routes";
-import { useAuth } from "@/contexts/AuthContext";
 import fetcher from "@/config/axios";
 import { ProjectSchemaType } from "@/api/schemas/project";
 import buildQueryParams from "@/utils/build-query-params";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { hasUserSession } from "@/utils/routes";
 
 function ProjectsPage() {
-  const user = useAuth();
+  const user = useUser();
   const query = {
     order: {
       updated_at: "desc",
     },
     filter: {
-      user_id: user.data?.id,
+      user_id: user?.id,
     },
     from: 0,
     to: 10,
@@ -27,7 +28,7 @@ function ProjectsPage() {
   };
 
   const { data, isLoading, refetch } = useQuery(
-    `user ${user.data?.id} projects`,
+    `user ${user?.id} projects`,
     async () => {
       const queryParams = buildQueryParams(query);
       const { data } = await fetcher().get(`/projects?${queryParams}`);
@@ -35,7 +36,7 @@ function ProjectsPage() {
     },
     {
       initialData: [],
-      enabled: !!user.data?.id,
+      enabled: !!user?.id,
     }
   );
 
@@ -162,4 +163,21 @@ function ProjectsPage() {
   );
 }
 
-export default protectPage(ProjectsPage);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (!isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+export default ProjectsPage;

@@ -1,5 +1,6 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { protectPage } from "@/utils/routes";
+import { hasUserSession } from "@/utils/routes";
+import { GetServerSidePropsContext } from "next";
 
 function Dashboard() {
   return (
@@ -9,4 +10,21 @@ function Dashboard() {
   );
 }
 
-export default protectPage(Dashboard);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Check if user is logged in
+  const isLoggedIn = await hasUserSession(ctx);
+  if (!isLoggedIn) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+export default Dashboard;

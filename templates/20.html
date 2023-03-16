@@ -13,53 +13,70 @@
     </style>
   </head>
   <body>
-    <div class="bg-[#ac7ed2] w-[1080px] h-[1080px] relative overflow-hidden">
-      <div
-        class="bg-[#f5a8d3] rounded-[50px] w-[1000px] h-[650px] absolute left-10 top-[215px]"></div>
-
-      <div
-        class="text-[#ffffff] text-center absolute left-[68px] top-[297px] w-[942px] h-[460px]"
-        style="font: 400 64px 'Khand', sans-serif">
-        <span>{{content}}</span>
+    <div
+      class="bg-[rgba(96,108,56,0.80)] w-[1080px] h-[1080px] relative overflow-hidden">
+      <div class="w-[1080px] h-[1080px] absolute left-0 top-0 overflow-hidden">
+        <div class="w-[820px] h-[630px] absolute left-[200px] top-[225px]">
+          {{!-- Content --}}
+          <div
+            class="text-[#fefae0] text-center absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
+            style="font: 700 58px 'Inter', sans-serif">
+            {{#if (isEqual source 'url')}}
+            <p class="whitespace-normal">{{description}}</p>
+            {{/if}} 
+            {{#if (isEqual source 'twitter')}}
+            <p class="whitespace-pre-line">{{content}}</p>
+            {{/if}}
+          </div>
+        </div>
       </div>
 
       <div
-        class="bg-[#f4f5e2] rounded-[50px] w-[500px] h-[100px] absolute left-[290px] top-[165px]"></div>
+        class="text-[#0a0908] text-left absolute right-[70px] bottom-[1025px]"
+        style="font: 600 12px 'Inter', sans-serif">
+        Created with by @spanduck
+      </div>
 
+      {{!-- Twitter User Details --}} 
+      {{#if (isEqual source 'twitter')}}
       <div
-        class="bg-[#f4f5e2] rounded-[50px] w-[500px] h-[100px] absolute left-[290px] top-[815px]"></div>
-
-      <div class="w-[446px] h-[697px] static">
-        <div
-          class="text-[#ac7ed2] text-left absolute left-[316px] top-[193px]"
-          style="font: 700 32px 'Inter', sans-serif">
+        class="absolute right-[219px] left-[41px] bottom-[-26px] top-[950px]"
+        style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
+        <p
+          class="text-[#283618] text-left absolute left-[155px] top-[42px]"
+          style="font: 700 36px 'Inter', sans-serif">
           {{display_name}}
-        </div>
+        </p>
 
-        <div
-          class="text-[#ac7ed2] text-left absolute left-[475px] top-[850px]"
-          style="font: 700 24px 'Inter', sans-serif">
-          {{username}}
-        </div>
+        <p
+          class="text-[#283618] text-left absolute left-[155px] top-[97px]"
+          style="font: 400 24px 'Inter', sans-serif">
+          @{{username}}
+        </p>
 
         <img
-          class="rounded-[100px] w-[50px] h-[50px] absolute left-[419px] top-[840px]"
+          class="rounded-[50%] w-[120px] h-[120px] absolute left-0 top-[17px]"
           src="{{avatar}}" />
       </div>
+      {{/if}}
 
-      <div class="w-[205px] h-[17px] absolute left-[819px] top-[988px]">
-        <div
-          class="text-left absolute left-0 top-0"
-          style="font: 400 14px 'Inter', sans-serif">
-          <span
-            ><span class="created-with----by--spanduck2-span">Created with</span
-            ><span class="created-with----by--spanduck2-span2"> ❤️ </span
-            ><span class="created-with----by--spanduck2-span3"
-              >by @spanduck</span
-            ></span
-          >
-        </div>
+      {{!-- URL User Details --}} 
+      {{#if (isEqual source 'url')}}
+      <div
+        class="absolute right-[219px] left-[41px] bottom-[-26px] top-[950px] max-w-full"
+        style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
+        <p
+          class="text-[#283618] text-left"
+          style="font: 400 24px 'Inter', sans-serif">
+          {{title}}
+        </p>
+
+        <p
+          class="text-[#283618] text-left">
+          {{url}}
+        </p>
       </div>
+      {{/if}}
     </div>
   </body>
 </html>

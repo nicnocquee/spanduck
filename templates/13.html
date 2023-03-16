@@ -21,18 +21,16 @@
         Created with by @spanduck
       </div>
 
-      <div class="w-[820px] h-[630px] absolute left-[130px] top-[332px]">
+      <div class="w-[820px] h-[630px] absolute left-[130px] top-[250px]">
         {{!-- Content --}}
         <div
-          class="text-[rgba(245,245,245,0.80)] text-center absolute left-[5px] top-2.5 w-[810px] h-[620px]"
+          class="text-[rgba(245,245,245,0.80)] text-center absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
           style="font: 700 58px 'Inter', sans-serif">
           {{#if (isEqual source 'url')}}
-            <p class="whitespace-normal">{{description}}</p>
-          {{/if}}
+          <p class="whitespace-normal">{{description}}</p>
+          {{/if}} 
           {{#if (isEqual source 'twitter')}}
-            <p class="whitespace-pre-line">
-              {{content}} 
-            </p>
+          <p class="whitespace-pre-line">{{content}}</p>
           {{/if}}
         </div>
       </div>
@@ -41,37 +39,37 @@
         class="absolute right-[123px] left-[123px] bottom-[801px] top-[45px]">
         <!-- Twitter Avatar -->
         {{#if (isEqual source 'twitter')}}
-          <img
-            class="rounded-[50%] w-[120px] h-[120px] absolute left-[357px] top-[114px]"
-            src="{{avatar}}" />
-        {{/if}}
-
-        {{!-- Twitter User Details --}}
+        <img
+          class="rounded-[50%] w-[120px] h-[120px] absolute left-[357px] top-[114px]"
+          src="{{avatar}}" />
+        {{/if}} 
+        
+        {{!-- Twitter User Details --}} 
         {{#if (isEqual source 'twitter')}}
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[314px] top-[70px]"
-            style="font: 400 24px 'Inter', sans-serif">
-            @{{username}}
-          </div>
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[172px] top-[11px]"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{display_name}} 
-          </div>
-        {{/if}}
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute left-[314px] top-[70px]"
+          style="font: 400 24px 'Inter', sans-serif">
+          @{{username}}
+        </div>
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute left-[172px] top-[11px]"
+          style="font: 400 36px 'Inter', sans-serif">
+          {{display_name}}
+        </div>
+      </div>
 
-        {{!-- URL Details --}}
-        {{#if (isEqual source 'url')}}
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[314px] top-[70px]"
-            style="font: 400 18px 'Inter', sans-serif">
-            {{url}}
-          </div>
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[172px] top-[11px]"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{title}} 
-          </div>
+      <div
+      class="absolute top-[200px] max-w-full">
+        {{/if}} {{!-- URL Details --}} {{#if (isEqual source 'url')}}
+        <p
+          class="text-[rgba(255,255,255,0.90)] text-center"
+          style="font: 400 36px 'Inter', sans-serif">
+          {{title}}
+        </p>
+        <p
+          class="text-[rgba(255,255,255,0.90)] text-center">
+          {{url}}
+        </p>
         {{/if}}
       </div>
     </div>

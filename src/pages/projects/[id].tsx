@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import buildQueryParams from "@/utils/build-query-params";
 import { protectPage } from "@/utils/routes";
 import { ArrowPathIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
 
 type ProjectViewProps = {
   project: ProjectSchemaType;
@@ -21,6 +22,11 @@ type ProjectViewProps = {
 
 function ProjectView({ project }: ProjectViewProps) {
   const user = useAuth();
+  const router = useRouter();
+  const { query: queryParams } = router;
+  const { templateID } = queryParams;
+  const generateFromTemplate = !!templateID || false;
+
   const query = {
     order: {
       updated_at: "desc",
@@ -51,7 +57,7 @@ function ProjectView({ project }: ProjectViewProps) {
 
   const [selectedGeneratedImage, setSelectedGeneratedImage] =
     useState<GeneratedImageSchemaType | null>(null);
-  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(generateFromTemplate);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   return (
@@ -60,6 +66,7 @@ function ProjectView({ project }: ProjectViewProps) {
         open={addModalOpen}
         setOpen={setAddModalOpen}
         onClose={() => refetch()}
+        templateID={parseInt(templateID as string, 10) || 1}
         projectID={project.id}
       />
       <DeleteGeneratedImageModal

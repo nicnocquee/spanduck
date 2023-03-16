@@ -13,6 +13,7 @@ type AddGeneratedImageModalProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   onClose: () => void;
   projectID: number;
+  templateID: number;
 };
 
 type FormValues = {
@@ -26,6 +27,7 @@ export default function AddGeneratedImageModal({
   setOpen,
   onClose,
   projectID,
+  templateID,
 }: AddGeneratedImageModalProps) {
   const user = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -148,6 +150,7 @@ export default function AddGeneratedImageModal({
                             id="template_id"
                             name="template_id"
                             min={1}
+                            defaultValue={templateID}
                             required
                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />

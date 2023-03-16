@@ -1,4 +1,4 @@
-import { ProjectCreateEditSchema, ProjectSchema } from "@/api/schemas/project";
+import { ProjectCreateEditSchema } from "@/api/schemas/project";
 import { createProject, getProjects } from "@/api/usecases/database//project";
 import handleResponse from "@/api/utils/handle-response";
 import { StatusCodes } from "http-status-codes";

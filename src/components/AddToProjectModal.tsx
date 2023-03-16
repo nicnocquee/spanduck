@@ -4,9 +4,9 @@ import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { ErrorAlert } from "./Alert";
 import { Template } from "@/pages/templates";
 import { ProjectSchemaType } from "@/api/schemas/project";
+import { useRouter } from "next/router";
 
 type AddToProjectModalProps = {
   open: boolean;
@@ -16,7 +16,8 @@ type AddToProjectModalProps = {
 };
 
 type FormValues = {
-  projectId: string;
+  templateID?: number;
+  projectID: number;
 };
 
 export default function AddToProjectModal({
@@ -25,9 +26,12 @@ export default function AddToProjectModal({
   projects,
   selectedTemplate,
 }: AddToProjectModalProps) {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const handleSubmit = async (values: FormValues) => {};
+  const router = useRouter();
+  const handleSubmit = async (values: FormValues) => {
+    router.push(
+      `/projects/${values.projectID}?templateID=${values.templateID}`
+    );
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -55,9 +59,9 @@ export default function AddToProjectModal({
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                 <Formik
                   initialValues={{
-                    templateId: selectedTemplate?.id,
+                    templateID: selectedTemplate?.id,
                     templateName: selectedTemplate?.name,
-                    projectId: "",
+                    projectID: projects?.[0]?.id,
                   }}
                   onSubmit={handleSubmit}>
                   <Form>
@@ -76,11 +80,6 @@ export default function AddToProjectModal({
                         className="text-base font-semibold leading-6 text-gray-900">
                         Add to Project
                       </Dialog.Title>
-                      {errorMessage && (
-                        <div className="mt-4">
-                          <ErrorAlert message={errorMessage} />
-                        </div>
-                      )}
                       <div className="mt-4">
                         <label
                           htmlFor="templateName"
@@ -106,9 +105,9 @@ export default function AddToProjectModal({
                         <div className="mt-2">
                           <Field
                             as="select"
-                            id="projectId"
-                            name="projectId"
-                            defaultValue={projects.at(0)?.id}
+                            id="projectID"
+                            name="projectID"
+                            defaultValue={projects?.[0]?.id}
                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             {projects.map((project) => (
                               <option key={project.id} value={project.id}>

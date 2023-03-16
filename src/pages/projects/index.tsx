@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Link from "next/link";
+
 import AddProjectModal from "@/components/project/AddProjectModal";
 import DeleteProjectModal from "@/components/project/DeleteProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -11,7 +12,7 @@ import { ProjectSchemaType } from "@/api/schemas/project";
 import buildQueryParams from "@/utils/build-query-params";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-function Projects() {
+function ProjectsPage() {
   const user = useAuth();
   const query = {
     order: {
@@ -25,11 +26,7 @@ function Projects() {
     limit: 10,
   };
 
-  const {
-    data: projects,
-    isLoading,
-    refetch,
-  } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     `user ${user.data?.id} projects`,
     async () => {
       const queryParams = buildQueryParams(query);
@@ -37,6 +34,7 @@ function Projects() {
       return data.data;
     },
     {
+      initialData: [],
       enabled: !!user.data?.id,
     }
   );
@@ -93,7 +91,7 @@ function Projects() {
                 <div className="w-full h-32 flex items-center justify-center">
                   <ArrowPathIcon className="w-5 h-5 animate-spin" />
                 </div>
-              ) : projects.length < 1 ? (
+              ) : data.length < 1 ? (
                 <div className="w-full h-32 flex items-center justify-center">
                   No projects to display
                 </div>
@@ -119,7 +117,7 @@ function Projects() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {projects.map((project: ProjectSchemaType) => (
+                    {data.map((project: ProjectSchemaType) => (
                       <tr key={project.id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           <Link
@@ -164,4 +162,4 @@ function Projects() {
   );
 }
 
-export default protectPage(Projects);
+export default protectPage(ProjectsPage);

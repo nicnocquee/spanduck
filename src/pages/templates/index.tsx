@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { toast } from "react-hot-toast";
 
 import AddToProjectModal from "@/components/AddToProjectModal";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -9,15 +10,16 @@ import { protectPage } from "@/utils/routes";
 import buildQueryParams from "@/utils/build-query-params";
 import fetcher from "@/config/axios";
 import { useAuth } from "@/contexts/AuthContext";
+import { ProjectSchemaType } from "@/api/schemas/project";
 
 export type Template = {
-  id: string;
+  id: number;
   name: string;
   image: string;
   author: string;
 };
 
-function Templates() {
+function TemplatesPage() {
   const user = useAuth();
   const query = {
     order: {
@@ -31,7 +33,7 @@ function Templates() {
     limit: 10,
   };
 
-  const { data: projects } = useQuery(
+  const { data } = useQuery(
     "projects",
     async () => {
       const queryParams = buildQueryParams(query);
@@ -46,6 +48,14 @@ function Templates() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template>();
 
+  const handleChooseTemplate = (template: Template) => {
+    if (data?.length < 1) {
+      toast.error("Please create a project first.");
+    } else {
+      setSelectedTemplate(template);
+    }
+  };
+
   useEffect(() => {
     setTemplates(templatesData);
   }, []);
@@ -54,7 +64,7 @@ function Templates() {
     <DashboardLayout title="Templates">
       <AddToProjectModal
         open={!!selectedTemplate}
-        projects={projects}
+        projects={data}
         selectedTemplate={selectedTemplate}
         setOpen={() => setSelectedTemplate(undefined)}
       />
@@ -78,7 +88,7 @@ function Templates() {
                 <li key={template.image} className="relative">
                   <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
                     <Image
-                      src={template.image}
+                      src={require(`templates/images/${template.image}`)}
                       alt={template.name}
                       width={1920}
                       height={1280}
@@ -86,7 +96,7 @@ function Templates() {
                     />
                     <button
                       type="button"
-                      onClick={() => setSelectedTemplate(template)}
+                      onClick={() => handleChooseTemplate(template)}
                       className="absolute inset-0 focus:outline-none"
                     />
                   </div>
@@ -106,4 +116,4 @@ function Templates() {
   );
 }
 
-export default protectPage(Templates);
+export default protectPage(TemplatesPage);

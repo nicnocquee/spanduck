@@ -6,8 +6,8 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  const { metadata, templateID, fileName } = request.body;
-  const ITE = new ImageTemplateEngine(metadata);
+  const { metadata, templateID, fileName, is_premium } = request.body;
+  const ITE = new ImageTemplateEngine(metadata, is_premium);
   await ITE.generate(parseInt(templateID as string, 10) || 1, fileName);
 
   // Get download URL for image

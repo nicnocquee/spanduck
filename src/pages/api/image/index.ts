@@ -130,6 +130,7 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
 
     const puppeteerBody = {
       metadata,
+      is_premium: false,
       fileName,
       templateID: params.templateID as string,
     };

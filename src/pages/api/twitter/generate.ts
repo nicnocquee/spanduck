@@ -125,7 +125,7 @@ async function generate(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Render the image
-    const ITE = new ImageTemplateEngine(metadata);
+    const ITE = new ImageTemplateEngine(metadata, false);
     await ITE.generate(templateID, fileName);
 
     // Get download URL for image

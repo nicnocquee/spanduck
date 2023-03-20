@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { useUser } from "@supabase/auth-helpers-react";
+import Link from "next/link";
 import { useQuery } from "react-query";
 
 import { GeneratedImageSchemaType } from "@/api/schemas/generated-image";
@@ -8,12 +8,12 @@ import { getGeneratedImages } from "@/api/usecases/database/generated-image";
 import { getProjects } from "@/api/usecases/database/project";
 import serverSupabaseClient from "@/api/utils/server-supabase-client";
 import DashboardLayout from "@/components/DashboardLayout";
+import GeneratedImageItem from "@/components/generated-image/GeneratedImageItem";
+import fetcher from "@/config/axios";
 import buildQueryParams from "@/utils/build-query-params";
 import { hasUserSession } from "@/utils/routes";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import fetcher from "@/config/axios";
-import GeneratedImageItem from "@/components/generated-image/GeneratedImageItem";
-import Link from "next/link";
+import { useUser } from "@supabase/auth-helpers-react";
 
 type DashboardPageProps = {
   projects: ProjectSchemaType[];
@@ -82,9 +82,9 @@ function DashboardPage({ projects, generatedImages }: DashboardPageProps) {
       <div className="mt-8 flow-root px-4 lg:px-0">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <h3 className="mt-2 text-sm text-gray-700">
-              Recently generated images
-            </h3>
+            <h1 className="text-xl font-semibold leading-6 text-gray-900 mb-4">
+              Recent
+            </h1>
             <ul
               role="list"
               className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
@@ -117,7 +117,9 @@ function DashboardPage({ projects, generatedImages }: DashboardPageProps) {
       <div className="mt-8 flow-root px-4 lg:px-0">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <h3 className="mt-2 text-sm text-gray-700">Quick access</h3>
+            <h1 className="text-xl font-semibold leading-6 text-gray-900 mb-4">
+              Your projects
+            </h1>
             <ul
               role="list"
               className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
@@ -193,12 +195,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const [getProject, getGeneratedImage] = await Promise.allSettled([
     await getProjects({
       filter: `user_id:${userID}`,
-      order: `updated_at:desc`,
+      order: "updated_at:desc",
       limit: 5,
     }),
     await getGeneratedImages({
       filter: `user_id:${userID}`,
-      order: `updated_at:desc`,
+      order: "updated_at:desc",
       limit: 4,
     }),
   ]);

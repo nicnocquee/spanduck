@@ -20,12 +20,11 @@
       <div class="w-[820px] h-[630px] absolute left-[130px] top-[324px]">
         {{!-- Content --}}
         <div
-          class="text-[rgba(245,245,245,0.80)] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px]  max-w-[810px] max-h-[620px] truncate"
+          class="text-[rgba(245,245,245,0.80)] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
           style="font: 700 58px 'Inter', sans-serif">
           {{#if (isEqual source 'url')}}
           <p class="whitespace-normal">{{description}}</p>
-          {{/if}} 
-          {{#if (isEqual source 'twitter')}}
+          {{/if}} {{#if (isEqual source 'twitter')}}
           <p class="whitespace-pre-line">{{content}}</p>
           {{/if}}
         </div>
@@ -33,8 +32,7 @@
 
       <div
         class="absolute right-[130px] left-[130px] bottom-[806px] top-[118px]">
-        {{!-- Twitter User Details --}} 
-        {{#if (isEqual source 'twitter')}}
+        {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
         <div
           class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
           style="font: 400 36px 'Inter', sans-serif">
@@ -45,7 +43,7 @@
           style="font: 400 24px 'Inter', sans-serif">
           @{{username}}
         </div>
-        {{/if}} 
+        {{/if}}
 
         <!-- Twitter Avatar -->
         {{#if (isEqual source 'twitter')}}
@@ -54,29 +52,26 @@
           src="{{avatar}}" />
         {{/if}}
       </div>
-        
-      <div
-        class="absolute right-[130px] left-[130px] top-[170px] max-w-full">
-        {{!-- URLr Details --}} 
-        {{#if (isEqual source 'url')}}
+
+      <div class="absolute right-[130px] left-[130px] top-[170px] max-w-full">
+        {{!-- URLr Details --}} {{#if (isEqual source 'url')}}
         <div
           class="text-[rgba(255,255,255,0.90)] text-left"
           style="font: 400 36px 'Inter', sans-serif">
           {{title}}
         </div>
-        <div
-          class="text-[rgba(255,255,255,0.90)] text-left">
-          {{url}}
-        </div>
+        <div class="text-[rgba(255,255,255,0.90)] text-left">{{url}}</div>
         {{/if}}
       </div>
 
       <!-- Watermark -->
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[rgba(255,255,255,0.90)] text-left absolute right-[456px] bottom-[62px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
+      {{/if}}
     </div>
   </body>
 </html>

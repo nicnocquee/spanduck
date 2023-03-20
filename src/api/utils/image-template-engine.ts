@@ -25,11 +25,13 @@ Handlebars.registerHelper("isEqual", function (value1, value2) {
 });
 
 export class ImageTemplateEngine {
+  private source = "";
   private data:
     | ITwitterData
     | IImageData
     | WebImageMetadataSchemaType
     | TwitterImageMetadataSchemaType;
+  private is_premium: boolean = false;
 
   private isTwitterData(
     data: any
@@ -37,16 +39,19 @@ export class ImageTemplateEngine {
     return data.tweet_url !== undefined || data.tweet_id !== undefined;
   }
 
-  private source = "";
-
   constructor(
     data:
       | ITwitterData
       | IImageData
       | WebImageMetadataSchemaType
-      | TwitterImageMetadataSchemaType
+      | TwitterImageMetadataSchemaType,
+    is_premium: boolean
   ) {
     this.data = data;
+
+    if (is_premium === true) {
+      this.is_premium = is_premium;
+    }
 
     if (this.isTwitterData(data)) {
       this.source = "twitter";
@@ -66,7 +71,11 @@ export class ImageTemplateEngine {
 
     // Compile the HTML with the data provided
     const template = Handlebars.compile(file);
-    const html = template({ ...this.data, source: this.source });
+    const html = template({
+      ...this.data,
+      source: this.source,
+      is_premium: this.is_premium,
+    });
 
     // Generate the image based on the HTML
     const image = await nodeHtmlToImage({

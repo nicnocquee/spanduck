@@ -20,60 +20,55 @@
           class="text-[#1e1e1e] text-right absolute left-4 top-0 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
           style="font: 700 58px 'Inter', sans-serif">
           {{#if (isEqual source 'url')}}
-            <p class="whitespace-normal">{{description}}</p>
-          {{/if}}
-          {{#if (isEqual source 'twitter')}}
-            <p class="whitespace-pre-line">
-              {{content}} 
-            </p>
+          <p class="whitespace-normal">{{description}}</p>
+          {{/if}} {{#if (isEqual source 'twitter')}}
+          <p class="whitespace-pre-line">{{content}}</p>
           {{/if}}
         </div>
       </div>
 
       <div class="absolute right-[130px] left-[130px] bottom-44 top-[783px]">
-        {{!-- Twitter User Details --}}
-        {{#if (isEqual source 'twitter')}}
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{display_name}} 
-          </div>
-          <div
-            class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[97px]"
-            style="font: 400 24px 'Inter', sans-serif">
-            @{{username}}
-          </div>
+        {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
+          style="font: 400 36px 'Inter', sans-serif">
+          {{display_name}}
+        </div>
+        <div
+          class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[97px]"
+          style="font: 400 24px 'Inter', sans-serif">
+          @{{username}}
+        </div>
         {{/if}}
 
         <!-- Twitter Avatar -->
         {{#if (isEqual source 'twitter')}}
-          <img
-            class="rounded-[50%] object-center w-[120px] h-[120px] absolute left-0 top-[17px]"
-            src="{{avatar}}" />
+        <img
+          class="rounded-[50%] object-center w-[120px] h-[120px] absolute left-0 top-[17px]"
+          src="{{avatar}}" />
         {{/if}}
       </div>
 
-      <div class="absolute right-[130px] left-[130px] bottom-44 top-[783px] max-w-full">
-        {{!-- URL Details --}}
-        {{#if (isEqual source 'url')}}
-          <p
-            class="text-[rgba(255,255,255,0.90)] text-left"
-            style="font: 400 36px 'Inter', sans-serif">
-            {{title}} 
-          </p>
-          <p
-            class="text-[rgba(255,255,255,0.90)] text-left">
-            {{url}}
-          </p>
+      <div
+        class="absolute right-[130px] left-[130px] bottom-44 top-[783px] max-w-full">
+        {{!-- URL Details --}} {{#if (isEqual source 'url')}}
+        <p
+          class="text-[rgba(255,255,255,0.90)] text-left"
+          style="font: 400 36px 'Inter', sans-serif">
+          {{title}}
+        </p>
+        <p class="text-[rgba(255,255,255,0.90)] text-left">{{url}}</p>
         {{/if}}
       </div>
 
       <!-- Watermark -->
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[rgba(255,255,255,0.90)] text-left absolute right-[457px] bottom-[50px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
+      {{/if}}
     </div>
   </body>
 </html>

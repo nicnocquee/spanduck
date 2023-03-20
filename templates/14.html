@@ -31,17 +31,14 @@
             style="font: 700 58px 'Inter', sans-serif">
             {{#if (isEqual source 'url')}}
             <p class="whitespace-normal">{{description}}</p>
-            {{/if}} 
-            {{#if (isEqual source 'twitter')}}
+            {{/if}} {{#if (isEqual source 'twitter')}}
             <p class="whitespace-pre-line">{{content}}</p>
             {{/if}}
           </div>
         </div>
 
-        <div
-          class="absolute right-[65px] left-[65px] top-[70px] max-w-full">
-          {{!-- Twitter User Details --}} 
-          {{#if (isEqual source 'twitter')}}
+        <div class="absolute right-[65px] left-[65px] top-[70px] max-w-full">
+          {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
           <div
             class="text-[rgba(255,255,255,0.90)] text-left absolute left-[155px] top-[42px]"
             style="font: 400 36px 'Inter', sans-serif">
@@ -62,28 +59,25 @@
           {{/if}}
         </div>
 
-        <div
-          class="absolute right-[65px] left-[65px] top-[70px]">
-          {{!-- URL Details --}} 
-          {{#if (isEqual source 'url')}}
+        <div class="absolute right-[65px] left-[65px] top-[70px]">
+          {{!-- URL Details --}} {{#if (isEqual source 'url')}}
           <p
             class="text-[rgba(255,255,255,0.90)] text-left"
             style="font: 400 36px 'Inter', sans-serif">
             {{title}}
           </p>
-          <p
-            class="text-[rgba(255,255,255,0.90)] text-left">
-            {{url}}
-          </p>
+          <p class="text-[rgba(255,255,255,0.90)] text-left">{{url}}</p>
           {{/if}}
         </div>
 
         <!-- Watermark -->
+        {{#if (isEqual is_premium false)}}
         <div
           class="text-[rgba(255,255,255,0.90)] text-left absolute right-[391px] bottom-[25px]"
           style="font: 600 12px 'Inter', sans-serif">
           Created with by @spanduck
         </div>
+        {{/if}}
       </div>
     </div>
   </body>

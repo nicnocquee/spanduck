@@ -3,10 +3,12 @@ import {
   TwitterImageMetadataSchemaType,
   WebImageMetadataSchemaType,
 } from "@/api/schemas/generated-image";
+import { PremiumSchema } from "@/api/schemas/premium";
 import {
   createGeneratedImage,
   getGeneratedImages,
 } from "@/api/usecases/database/generated-image";
+import { getPremiumByUserID } from "@/api/usecases/database/premium";
 import generateImageFromTwitter from "@/api/utils/generate-image-from-twitter";
 import generateImageFromURL from "@/api/utils/generate-image-from-url";
 import handleResponse from "@/api/utils/handle-response";
@@ -93,13 +95,46 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       fileName: string;
     };
 
-    // Generate image based on the type
+    // Check if current user is premium
+    const { data: premiumData, error: premiumError } = await getPremiumByUserID(
+      user_id
+    );
+
+    if (premiumError) {
+      return handleResponse(res, {
+        status: StatusCodes.BAD_REQUEST,
+        body: {
+          message: "Failed to create the generated image",
+          error: premiumError,
+        },
+      });
+    }
+
+    let is_premium = false;
+    if (premiumData.length > 0) {
+      const [userPremiumData] = premiumData as PremiumSchema[];
+      // Check if user has expired_at data
+      // Because some user has nullish expired_at data for "insiders"
+      if (!!userPremiumData.expired_at) {
+        // If the expiry date is not yet passed today date
+        if (new Date(userPremiumData.expired_at) < new Date()) {
+          // Set is premium true
+          is_premium = true;
+        }
+      } else {
+        // Else, set the is premium true for insiders
+        is_premium = true;
+      }
+    }
+
     if (type === "url") {
+      // Generate image based on the type
       const { image, image_metadata, fileName } = await generateImageFromURL({
         url,
         template_id,
         user_id,
         project_id,
+        is_premium,
       });
 
       generatedData = {
@@ -114,6 +149,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           template_id,
           user_id,
           project_id,
+          is_premium,
         });
 
       generatedData = {

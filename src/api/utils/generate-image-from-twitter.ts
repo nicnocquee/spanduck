@@ -11,6 +11,7 @@ interface TPayload {
   template_id: number;
   project_id: number;
   user_id: string;
+  is_premium: boolean;
 }
 
 export default async function generateImageFromTwitter({
@@ -18,6 +19,7 @@ export default async function generateImageFromTwitter({
   template_id,
   user_id,
   project_id,
+  is_premium,
 }: TPayload) {
   // Generate a nanoid
   const nanoID = nanoid(16);
@@ -56,13 +58,16 @@ export default async function generateImageFromTwitter({
     throw new Error("Template not found!");
   }
 
-  const ITE = new ImageTemplateEngine({
-    url,
-    unique_id: nanoID,
-    ...image_metadata,
-    tweet_id,
-    content: image_metadata.content.trimStart(),
-  });
+  const ITE = new ImageTemplateEngine(
+    {
+      url,
+      unique_id: nanoID,
+      ...image_metadata,
+      tweet_id,
+      content: image_metadata.content.trimStart(),
+    },
+    is_premium
+  );
   await ITE.generate(template_id || 1, fileName);
 
   // Get download URL for image

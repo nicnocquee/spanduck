@@ -75,8 +75,7 @@
         {{/if}}
       </div>
 
-      <div
-        class="absolute right-[130px] left-[130px] top-[90px] max-w-full">
+      <div class="absolute right-[130px] left-[130px] top-[90px] max-w-full">
         {{!-- URL User Details --}} {{#if (isEqual source 'url')}}
         <p
           class="text-[#adc178] text-left"
@@ -88,11 +87,13 @@
         {{/if}}
       </div>
 
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[#0a0908] text-left absolute right-[456px] bottom-[50px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
+      {{/if}}
     </div>
   </body>
 </html>

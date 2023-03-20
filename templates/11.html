@@ -18,11 +18,13 @@
         <div
           class="bg-[#000000] w-[1080px] h-[1080px] absolute left-0 top-0 overflow-hidden">
           <!-- Watermark -->
+          {{#if (isEqual is_premium false)}}
           <div
             class="text-[rgba(245,245,245,0.80)] text-left absolute right-[458px] bottom-[50px]"
             style="font: 400 12px 'Inter', sans-serif">
             Created with by @spanduck
           </div>
+          {{/if}}
 
           <div class="w-[820px] h-[650px] absolute left-[130px] top-[303px]">
             {{!-- Content --}}
@@ -30,10 +32,9 @@
               class="text-[#ffffff] text-right absolute left-2.5 top-[-11px] w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
               style="font: 700 58px 'Inter', sans-serif">
               {{#if (isEqual source 'url')}}
-                <p class="whitespace-normal">{{description}}</p>
-              {{/if}} 
-              {{#if (isEqual source 'twitter')}}
-                <p class="whitespace-pre-line">{{content}}</p>
+              <p class="whitespace-normal">{{description}}</p>
+              {{/if}} {{#if (isEqual source 'twitter')}}
+              <p class="whitespace-pre-line">{{content}}</p>
               {{/if}}
             </div>
           </div>
@@ -42,10 +43,8 @@
             class="border-solid border-[rgba(245,245,245,0.80)] w-[850px] h-0 absolute left-[76px] top-[254px]"
             style="border-width: 3px 0 0 0"></div>
 
-          <div
-            class="absolute right-[130px] left-[130px] top-[93px]">
-            {{!-- Twitter User Details --}} 
-            {{#if (isEqual source 'twitter')}}
+          <div class="absolute right-[130px] left-[130px] top-[93px]">
+            {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
             <div
               class="text-[#ffffff] text-left absolute left-[331px] top-[42px]"
               style="font: 400 36px 'Inter', sans-serif">
@@ -56,21 +55,14 @@
               style="font: 400 24px 'Inter', sans-serif">
               @{{username}}
             </div>
-            {{/if}} 
-            
-            {{!--URL Details --}} 
-            {{#if (isEqual source 'url')}}
-            <div
-            class="absolute left-[130px] top-[15px] w-max-full">
+            {{/if}} {{!--URL Details --}} {{#if (isEqual source 'url')}}
+            <div class="absolute left-[130px] top-[15px] w-max-full">
               <p
                 class="text-[#ffffff] text-right"
                 style="font: 400 36px 'Inter', sans-serif">
                 {{title}}
               </p>
-              <p
-                class="text-[#ffffff] text-right">
-                {{url}}
-              </p>
+              <p class="text-[#ffffff] text-right">{{url}}</p>
             </div>
             {{/if}}
 

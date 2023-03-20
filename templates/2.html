@@ -21,11 +21,13 @@
       <!-- Watermark -->
       <div
         class="border-solid border-[#ffffff] border-[5px] w-[950px] h-[950px] absolute left-[65px] top-[65px] overflow-hidden">
+        {{#if (isEqual is_premium false)}}
         <div
           class="text-[#0a0908] text-left absolute right-[30px] bottom-[21px]"
           style="font: 400 12px 'Inter', sans-serif">
           Created with by @spanduck
         </div>
+        {{/if}}
 
         <div class="w-[820px] h-[630px] absolute left-[55px] top-[265px]">
           {{!-- Content --}}
@@ -33,42 +35,37 @@
             class="text-[#0a0908] text-left absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
             style="font: 700 58px 'Inter', sans-serif">
             {{#if (isEqual source 'url')}}
-              <p class="whitespace-normal">{{description}}</p>
-            {{/if}} 
-            {{#if (isEqual source 'twitter')}}
-              <p class="whitespace-pre-line">{{content}}</p>
+            <p class="whitespace-normal">{{description}}</p>
+            {{/if}} {{#if (isEqual source 'twitter')}}
+            <p class="whitespace-pre-line">{{content}}</p>
             {{/if}}
           </div>
         </div>
 
         <div
           class="absolute right-[65px] left-[65px] bottom-[729px] top-[65px]">
-          {{!-- Twitter User Details --}} 
-          {{#if (isEqual source 'twitter')}}
-            <p
-              class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
-              style="font: 400 36px 'Inter', sans-serif">
-              {{display_name}}
-            </p>
-            <p
-              class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
-              style="font: 400 24px 'Inter', sans-serif">
-              @{{username}}
-            </p>
+          {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
+          <p
+            class="text-[#0a0908] text-left absolute left-[155px] top-[42px]"
+            style="font: 400 36px 'Inter', sans-serif">
+            {{display_name}}
+          </p>
+          <p
+            class="text-[#0a0908] text-left absolute left-[155px] top-[97px]"
+            style="font: 400 24px 'Inter', sans-serif">
+            @{{username}}
+          </p>
           {{/if}}
 
           <div
             class="absolute right-[65px] bottom-[729px] top-[65px] max-w-full">
-            {{!-- URL Details --}} 
-            {{#if (isEqual source 'url')}}
-              <p
-                class="text-[#0a0908] text-left"
-                style="font: 400 36px 'Inter', sans-serif">
-                {{title}}
-              </p>
-              <p>
-                {{url}}
-              </p>
+            {{!-- URL Details --}} {{#if (isEqual source 'url')}}
+            <p
+              class="text-[#0a0908] text-left"
+              style="font: 400 36px 'Inter', sans-serif">
+              {{title}}
+            </p>
+            <p>{{url}}</p>
             {{/if}}
           </div>
 

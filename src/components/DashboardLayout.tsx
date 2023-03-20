@@ -39,7 +39,16 @@ export default function DashboardLayout({
 
   const handleLogout = async () => {
     await supabaseClient.auth.signOut();
+
     router.push("/login");
+  };
+
+  const isNavigationActive = (href: string) => {
+    if (href === "/" && href === router.pathname) {
+      return true; // Special case for the dashboard page.
+    }
+
+    return href !== "/" && router.pathname.includes(href);
   };
 
   return (
@@ -104,7 +113,7 @@ export default function DashboardLayout({
                           key={item.name}
                           href={item.href}
                           className={classNames(
-                            item.href === router.pathname
+                            isNavigationActive(item.href)
                               ? "bg-indigo-800 text-white"
                               : "text-white hover:bg-indigo-600 hover:bg-opacity-75",
                             "group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -159,7 +168,7 @@ export default function DashboardLayout({
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                      item.href === router.pathname
+                      isNavigationActive(item.href)
                         ? "bg-indigo-800 text-white"
                         : "text-white hover:bg-indigo-600 hover:bg-opacity-75",
                       "group flex items-center px-2 py-2 text-sm font-medium rounded-md"

@@ -53,8 +53,7 @@
       </div>
 
       {{/if}} {{!-- URL User Details --}} {{#if (isEqual source 'url')}}
-      <div
-        class="absolute right-[130px] left-[130px] top-[120px]">
+      <div class="absolute right-[130px] left-[130px] top-[120px]">
         <p
           class="text-[rgba(255,255,255,0.90)] text-left"
           style="font: 400 36px 'Inter', sans-serif">
@@ -65,11 +64,14 @@
       </div>
       {{/if}}
 
+      <!-- Watermark -->
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[rgba(255,255,255,0.90)] text-left absolute right-[456px] bottom-[50px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
+      {{/if}}
     </div>
   </body>
 </html>

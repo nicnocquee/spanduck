@@ -11,6 +11,7 @@ interface TPayload {
   template_id: number;
   project_id: number;
   user_id: string;
+  is_premium: boolean;
 }
 
 export default async function generateImageFromURL({
@@ -18,6 +19,7 @@ export default async function generateImageFromURL({
   template_id,
   user_id,
   project_id,
+  is_premium,
 }: TPayload) {
   // Generate a nanoid
   const nanoID = nanoid(16);
@@ -50,11 +52,14 @@ export default async function generateImageFromURL({
   // Generate image
   let imageURL: string = "";
   const fileName = `${nanoID}_${project_id}_${user_id}.png`;
-  const ITE = new ImageTemplateEngine({
-    url,
-    unique_id: nanoID,
-    ...image_metadata,
-  });
+  const ITE = new ImageTemplateEngine(
+    {
+      url,
+      unique_id: nanoID,
+      ...image_metadata,
+    },
+    is_premium
+  );
   await ITE.generate(template_id || 1, fileName);
 
   // Get download URL for image

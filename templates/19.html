@@ -20,45 +20,37 @@
           <div
             class="text-[#6c757d] text-center absolute left-[5px] top-2.5 w-[810px] h-[620px] max-w-[810px] max-h-[620px] truncate"
             style="font: 700 58px 'Inter', sans-serif">
-            {{!-- Content --}}
-              {{#if (isEqual source 'url')}}
-              <p class="whitespace-normal">{{description}}</p>
-              {{/if}} 
-              {{#if (isEqual source 'twitter')}}
-              <p class="whitespace-pre-line">{{content}}</p>
-              {{/if}}
+            {{!-- Content --}} {{#if (isEqual source 'url')}}
+            <p class="whitespace-normal">{{description}}</p>
+            {{/if}} {{#if (isEqual source 'twitter')}}
+            <p class="whitespace-pre-line">{{content}}</p>
+            {{/if}}
           </div>
         </div>
 
-      {{#if (isEqual source 'twitter')}} 
-      {{#if images.length}}
+        {{#if (isEqual source 'twitter')}} {{#if images.length}}
         <img
           class="rounded-[0px_100px_100px_100px] w-[400px] h-[400px] absolute left-0 top-0 object-cover object-center"
           src="{{images.[0]}}" />
-      {{/if}}
-      {{/if}} 
-
-      {{#if (isEqual source 'url')}} 
-      {{#if image.src}}
+        {{/if}} {{/if}} {{#if (isEqual source 'url')}} {{#if image.src}}
         <img
           class="rounded-[0px_100px_100px_100px] w-[400px] h-[400px] absolute left-0 top-0 object-cover object-center"
           src="{{images.src}}" />
-          {{else}}
+        {{else}}
         <img
           class="rounded-[0px_100px_100px_100px] w-[400px] h-[400px] absolute left-0 top-0 object-cover object-center"
           src="{{image}}" />
-      {{/if}}
-      {{/if}} 
+        {{/if}} {{/if}}
       </div>
 
+      <!-- Watermark -->
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[#0a0908] text-left absolute right-[70px] bottom-[1025px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
-
-      {{!-- Twitter User Details --}} 
-      {{#if (isEqual source 'twitter')}}
+      {{/if}} {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
       <div
         class="absolute right-[-637px] left-[897px] bottom-[-22px] top-[946px]"
         style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
@@ -78,10 +70,7 @@
           class="rounded-[50%] w-[120px] h-[120px] absolute left-0 top-[17px]"
           src="{{avatar}}" />
       </div>
-      {{/if}}
-
-      {{!-- URL User Details --}} 
-      {{#if (isEqual source 'url')}}
+      {{/if}} {{!-- URL User Details --}} {{#if (isEqual source 'url')}}
       <div
         class="absolute right-[-637px] left-[897px] bottom-[-22px] top-[946px]"
         style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
@@ -91,13 +80,9 @@
           {{title}}
         </p>
 
-        <p
-          class="text-[#495057] text-left">
-          {{url}}
-        </p>
+        <p class="text-[#495057] text-left">{{url}}</p>
       </div>
       {{/if}}
-
     </div>
   </body>
 </html>

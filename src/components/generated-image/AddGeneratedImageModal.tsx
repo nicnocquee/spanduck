@@ -7,6 +7,7 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ErrorAlert } from "../Alert";
 import fetcher from "@/config/axios";
+import { AxiosError } from "axios";
 
 type AddGeneratedImageModalProps = {
   open: boolean;
@@ -30,23 +31,31 @@ export default function AddGeneratedImageModal({
   templateID,
 }: AddGeneratedImageModalProps) {
   const user = useUser();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (values: FormValues) => {
     setIsLoading(true);
+
     try {
-      await fetcher().post(`/generated-images`, {
+      await fetcher().post("/generated-images", {
         ...values,
         user_id: user?.id,
         project_id: projectID,
       });
 
       toast.success("Successfully created the project");
+
       setOpen(false);
       onClose();
-    } catch (e: any) {
-      setErrorMessage(e.response.data.message);
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      const message = axiosError.response?.data?.message;
+
+      if (message) {
+        setErrorMessage(message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +89,7 @@ export default function AddGeneratedImageModal({
                   initialValues={{
                     type: "url",
                     url: "",
-                    template_id: 1,
+                    template_id: templateID,
                   }}
                   onSubmit={handleSubmit}>
                   <Form>

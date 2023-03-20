@@ -23,22 +23,21 @@
             style="font: 700 58px 'Inter', sans-serif">
             {{#if (isEqual source 'url')}}
             <p class="whitespace-normal">{{description}}</p>
-            {{/if}} 
-            {{#if (isEqual source 'twitter')}}
+            {{/if}} {{#if (isEqual source 'twitter')}}
             <p class="whitespace-pre-line">{{content}}</p>
             {{/if}}
           </div>
         </div>
       </div>
 
+      <!-- Watermark -->
+      {{#if (isEqual is_premium false)}}
       <div
         class="text-[#0a0908] text-left absolute right-[70px] bottom-[1025px]"
         style="font: 600 12px 'Inter', sans-serif">
         Created with by @spanduck
       </div>
-
-      {{!-- Twitter User Details --}} 
-      {{#if (isEqual source 'twitter')}}
+      {{/if}} {{!-- Twitter User Details --}} {{#if (isEqual source 'twitter')}}
       <div
         class="absolute right-[219px] left-[41px] bottom-[-26px] top-[950px]"
         style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
@@ -58,10 +57,7 @@
           class="rounded-[50%] w-[120px] h-[120px] absolute left-0 top-[17px]"
           src="{{avatar}}" />
       </div>
-      {{/if}}
-
-      {{!-- URL User Details --}} 
-      {{#if (isEqual source 'url')}}
+      {{/if}} {{!-- URL User Details --}} {{#if (isEqual source 'url')}}
       <div
         class="absolute right-[219px] left-[41px] bottom-[-26px] top-[950px] max-w-full"
         style="transform-origin: 0 0; transform: rotate(-90deg) scale(1, 1)">
@@ -71,10 +67,7 @@
           {{title}}
         </p>
 
-        <p
-          class="text-[#283618] text-left">
-          {{url}}
-        </p>
+        <p class="text-[#283618] text-left">{{url}}</p>
       </div>
       {{/if}}
     </div>
